@@ -25,9 +25,9 @@ Project : [click here](https://github.com/haejiyun/statistics-big-data/blob/main
 Description.
 <br/>
 
-- **[R] Principal Component Analysis, Correspondance Analysis, Clustering**<br/>
-Project : [click here](https://github.com/haejiyun/statistics-big-data/blob/main/Scoring/ACP_haeji_yun.pdf)<br/>
-Project : [click here](https://github.com/haejiyun/statistics-big-data/blob/main/Scoring/AFC_Classification_haeji_yun.pdf)<br/>
+- **[R] Principal Component Analysis, Factorial Correspondance Analysis, CAH**<br/>
+PAC Project : [click here](https://github.com/haejiyun/statistics-big-data/blob/main/Scoring/ACP_haeji_yun.pdf)<br/>
+FCA & AHC Project : [click here](https://github.com/haejiyun/statistics-big-data/blob/main/Scoring/AFC_Classification_haeji_yun.pdf)<br/>
 Description.
 <br/>
 
@@ -46,7 +46,7 @@ Project : [click here]()<br/>
 Coming Soon
 <br/>
 
-- **[R] Survival Model**<br/>
+- **[Python] Survival Model**<br/>
 [click here]()<br/>
 Coming Soon
 <br/>
