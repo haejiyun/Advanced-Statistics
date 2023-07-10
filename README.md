@@ -11,7 +11,7 @@ Generalized Linear Model, Model Selection, Non-parametric Estimation, Time Serie
 ----------
 
 - **[R] Gaussian Linear Model **<br/>
-[click here]()<br/>
+[click here](https://github.com/haejiyun/statistics-big-data/blob/main/Gaussian%20Linear%20Model/modele_lineaire_gaussien_haeji_yun.pdf)<br/>
 Description.
 <br/>
 
