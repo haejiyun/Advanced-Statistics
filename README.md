@@ -15,38 +15,38 @@ Project : [click here](https://github.com/haejiyun/statistics-big-data/blob/main
 Description.
 <br/>
 
-- **[R] Generalized Linear Model & Model Selection **<br/>
+- **[R] Generalized Linear Model & Model Selection**<br/>
 Project : [click here](https://github.com/haejiyun/statistics-big-data/blob/main/Generalized%20Linear%20Model/MLG_haeji_yun.pdf)<br/>
 Description.
 <br/>
 
-- **[R] Non Parametric Estimation **<br/>
+- **[R] Non Parametric Estimation**<br/>
 Project : [click here](https://github.com/haejiyun/statistics-big-data/blob/main/Non%20Parametric%20Estimation/Estimation_non_parametrique.pdf)<br/>
 Description.
 <br/>
 
-- **[R] Principal Component Analysis, Correspondance Analysis, Clustering **<br/>
+- **[R] Principal Component Analysis, Correspondance Analysis, Clustering**<br/>
 Project : [click here](https://github.com/haejiyun/statistics-big-data/blob/main/Scoring/ACP_haeji_yun.pdf)<br/>
 Project : [click here](https://github.com/haejiyun/statistics-big-data/blob/main/Scoring/AFC_Classification_haeji_yun.pdf)<br/>
 Description.
 <br/>
 
-- **[R] Time Series **<br/>
+- **[R] Time Series**<br/>
 Project : [click here](https://github.com/haejiyun/statistics-big-data/blob/main/Time%20Series/time_series_haeji_yun.pdf)<br/>
 Description.
 <br/>
 
-- **[R] Bayesian Estimation **<br/>
+- **[R] Bayesian Estimation**<br/>
 Project : [click here]()<br/>
 Coming Soon
 <br/>
 
-- **[R] Extreme Values **<br/>
+- **[R] Extreme Values**<br/>
 Project : [click here]()<br/>
 Coming Soon
 <br/>
 
-- **[R] Survival Model **<br/>
+- **[R] Survival Model**<br/>
 [click here]()<br/>
 Coming Soon
 <br/>
