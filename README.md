@@ -10,6 +10,8 @@ Generalized Linear Model, Model Selection, Non-parametric Estimation, Time Serie
 
 ----------
 
+**ADVANCES STATISTICS**<br/>
+
 - **[R] Gaussian Linear Model**<br/>
 Project : [click here](https://github.com/haejiyun/statistics-big-data/blob/main/Gaussian%20Linear%20Model/modele_lineaire_gaussien_haeji_yun.pdf)<br/>
 Application of Gaussian Linear Model for the prediction of maize varieties based on its characteristics. Descriptive analysis, logical covariate selection, and statsitical tests are applied in order to verify if the gaussian linear model is right model to use.
@@ -51,3 +53,6 @@ Extreme values prediction for daily precipitaion at Marseille. An extrapolation 
 Project : [soon]()<br/>
 Churn analysis of an online game. Considering 90 days of inactivity as churn, the probability to churn is predicted based on the users' game characteristics such as the level, the race of game character, the zone visited by the character, belonging to a group etc.
 <br/>
+
+
+**MACHINE LEARNING & DEEP LEARNING**<br/>
