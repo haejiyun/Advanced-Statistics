@@ -10,9 +10,9 @@ Generalized Linear Model, Model Selection, Non-parametric Estimation, Time Serie
 
 ----------
 
-<br/>
+
 **ADVANCED STATISTICS**<br/>
-<br/>
+
 
 
 - **[R] Gaussian Linear Model**<br/>
