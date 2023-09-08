@@ -29,7 +29,8 @@ Theoretical application of non parametric model focusing on explanation of its m
 PAC Project : [click here](https://github.com/haejiyun/statistics-big-data/blob/main/Scoring/ACP_haeji_yun.pdf)<br/>
 Analysis of daily protein consumption of european countries. The dataset is composed of different proteine source with the protein quantity of 25 countries based on which similarities, differences, and particularities are analysed.
 <br/>
-FCA & AHC Project : [click here](https://github.com/haejiyun/statistics-big-data/blob/main/Scoring/AFC_Classification_haeji_yun.pdf)<br/>
+
+- **[R] FCA & AHC Project : [click here](https://github.com/haejiyun/statistics-big-data/blob/main/Scoring/AFC_Classification_haeji_yun.pdf)<br/>
 Analysis of 2017 presidential election of France. 14 candidats and the number of votes they received in different departments compose the dataset. The study gives the first insight on the association between the candidates and the departments. The study is then deepen with the clustering method.
 <br/>
 
