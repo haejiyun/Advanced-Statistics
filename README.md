@@ -10,10 +10,9 @@ Generalized Linear Model, Model Selection, Non-parametric Estimation, Time Serie
 
 ----------
 
-
-
-**ADVANCES STATISTICS**<br/>
-
+<br/>
+**ADVANCED STATISTICS**<br/>
+<br/>
 
 - **[R] Gaussian Linear Model**<br/>
 Project : [click here](https://github.com/haejiyun/statistics-big-data/blob/main/Gaussian%20Linear%20Model/modele_lineaire_gaussien_haeji_yun.pdf)<br/>
