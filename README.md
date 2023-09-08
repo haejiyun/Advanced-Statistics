@@ -1,7 +1,7 @@
-# statistics-big-data
+# statistics_big_data_dauphine
 
 <br/>
-This repository is about projects that I have completed during my course of Statistics and Big Data. <br/><br/>
+This repository is about projects that I have completed during my course of Statistics and Big Data at Dauphine. <br/><br/>
 Tools : R, Python, SQL <br/><br/>
 Skills : 
 Probability, Descriptive Statistics, Inferential Statistics, Gaussian Linear Model
