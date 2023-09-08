@@ -14,6 +14,7 @@ Generalized Linear Model, Model Selection, Non-parametric Estimation, Time Serie
 **ADVANCED STATISTICS**<br/>
 <br/>
 
+
 - **[R] Gaussian Linear Model**<br/>
 Project : [click here](https://github.com/haejiyun/statistics-big-data/blob/main/Gaussian%20Linear%20Model/modele_lineaire_gaussien_haeji_yun.pdf)<br/>
 Application of Gaussian Linear Model for the prediction of maize varieties based on its characteristics. Descriptive analysis, logical covariate selection, and statsitical tests are applied in order to verify if the gaussian linear model is right model to use.
