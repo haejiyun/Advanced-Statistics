@@ -38,16 +38,16 @@ Application of time series theory on anlysis of kilo coffee price. The analysis 
 <br/>
 
 - **[R] Bayesian Estimation**<br/>
-Project : [click here]()<br/>
+Project : [soon]()<br/>
 Prediction of necessary points in order for a high school teacher to be mutated to other school. The number of points is prediction for each set of 'high school - subject' using baysian regression. A comparison with a frequentist approch is tested in order to check the plausibility of the bayesian model.  
 <br/>
 
 - **[R] Extreme Values**<br/>
-Project : [click here]()<br/>
+Project : [soon]()<br/>
 Extreme values prediction for daily precipitaion at Marseille. An extrapolation on 1000 years is made from a dataset containing observations of 127 years. Different extreme values models are tested in order to find the most relevant one. 
 <br/>
 
 - **[Python] Survival Model**<br/>
-[click here]()<br/>
+[soon]()<br/>
 Churn analysis of an online game. Considering 90 days of inactivity as churn, the probability to churn is predicted based on the users' game characteristics such as the level, the race of game character, the zone visited by the character, belonging to a group etc.
 <br/>
