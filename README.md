@@ -44,7 +44,7 @@ Application of time series theory on anlysis of kilo coffee price. The analysis 
 
 - **[R] Bayesian Estimation**<br/>
 Project : [soon]()<br/>
-Prediction of necessary points in order for a high school teacher to be mutated to other school. The number of points is prediction for each set of 'high school - subject' using baysian regression. A comparison with a frequentist approch is tested in order to check the plausibility of the bayesian model.  
+Prediction of necessary points in order for a high school teacher to get mutated to other school. The number of points is prediction for each set of 'high school - subject' using baysian regression. A comparison with a frequentist approch is tested in order to check the plausibility of the bayesian model.  
 <br/>
 
 - **[R] Extreme Values**<br/>
