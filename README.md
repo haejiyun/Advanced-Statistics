@@ -11,7 +11,7 @@ Generalized Linear Model, Model Selection, Non-parametric Estimation, Time Serie
 ----------
 
 
-**ADVANCED STATISTICS**<br/>
+**PREDICTIVE MODELS**<br/>
 
 
 
