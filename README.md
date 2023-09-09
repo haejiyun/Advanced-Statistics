@@ -59,4 +59,7 @@ Churn analysis of an online game. Considering 90 days of inactivity as churn, th
 
 
 
-**MACHINE LEARNING & DEEP LEARNING**<br/>
+**MACHINE LEARNING**<br/>
+
+
+**DEEP LEARNING**<br/>
