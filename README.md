@@ -48,7 +48,7 @@ Prediction of necessary points in order for a high school teacher to get mutated
 <br/>
 
 - **[R] Extreme Values**<br/>
-Project : [click here](https://github.com/haejiyun/statistics_big_data_dauphine/blob/main/Valeurs%20Extrêmes/valeurs_extremes_haeji_yun.pdf)<br/>
+Project : [click here](https://github.com/haejiyun/statistics_big_data_dauphine/blob/main/Extreme%20Values/valeurs_extremes_haeji_yun.pdf)<br/>
 Extreme values prediction for daily precipitaion at Marseille. An extrapolation on 1000 years is made from a dataset containing observations of 127 years. Different extreme values models are tested in order to find the most relevant one. 
 <br/>
 
