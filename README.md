@@ -3,10 +3,8 @@
 <br/>
 This repository is about projects that I have completed during my course of Statistics and Big Data at Dauphine. <br/><br/>
 Tools : R, Python, SQL <br/><br/>
-Skills : 
-Probability, Descriptive Statistics, Inferential Statistics, Gaussian Linear Model
-Generalized Linear Model, Model Selection, Non-parametric Estimation, Time Series, Bayesian Estimation, Extreme Values, PCA, FCA, Classification, Missing Values, Survival Model <br/>
-<br/>
+Statistical Predictive Models : Gaussian Linear Model, Generalized Linear Model, Model Selection, Non-parametric Estimation, Time Series, Bayesian Estimation, Extreme Values, PCA, FCA, Classification, Missing Values, Survival Model <br/><br/>
+Machine Learning, Deep Learning : Classification(Logistic Regression, Random Forest, SVM), Clustering, Dimension Reduction(T-SNE), Deep Learning(CNN, RNN), Analyse de sentiment(NLP) <br/><br/>
 
 ----------
 
@@ -61,5 +59,22 @@ Churn analysis of an online game. Considering 90 days of inactivity as churn, th
 
 **MACHINE LEARNING**<br/>
 
+- **[Python] Sentiment Analysis**<br/>
+Project : [On-going]()<br/>
+Sentiment Analysis of Airbnb users in Paris before and after 2024 Paris Olympics period in order to get insight on how the quality of Airbnb offers during this period were polluted and deteriorated.
+<br/>
 
-**DEEP LEARNING**<br/>
+- **[Python] Classification**<br/>
+Project : [On-going]()<br/>
+Classification of simulated socio-economic classes based on socio-demographic and economical data published by INSEE. The project treated imbalanced data.
+Logistic Regression, Random Forest, and SVM algorithms were trainend by cross-validation method selectiong best performing algorithms based on confusion matrix, ROC and AUC.
+<br/>
+
+- **[Python] Clustering - Dimensionality Reduction**<br/>
+Project : [On-going]()<br/>
+<br/>
+
+- **[Python] Deep Learning**<br/>
+Project : [On-going]()<br/>
+Image Classification
+<br/>
