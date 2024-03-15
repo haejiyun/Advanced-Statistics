@@ -40,7 +40,7 @@ Project : [click here](https://github.com/haejiyun/statistics-big-data/blob/main
 Application of time series theory on anlysis of kilo coffee price. The analysis is done with graphical method and different time series analysis methods in order to make a prediction of future kilo coffe prices. Differents time series models are compared.
 <br/>
 
-- **[R] High Shcool Mutation Score Prediction with Bayesian Estimation**<br/>
+- **[R] High School Mutation Score Prediction with Bayesian Estimation**<br/>
 Project : [click here](https://github.com/haejiyun/statistics_big_data_dauphine/blob/main/Bayesian%20Statistics/statistique_bayesienne.pdf)<br/>
 Prediction of necessary points in order for a high school teacher to get mutated to other school. The number of points is prediction for each set of 'high school - subject' using baysian regression. A comparison with a frequentist approch is tested in order to check the plausibility of the bayesian model.  
 <br/>
