@@ -3,8 +3,8 @@
 <br/>
 This repository is about projects that I have completed during my course of Statistics and Big Data at Dauphine. <br/><br/>
 Tools : R, Python, SQL <br/><br/>
-Statistical Predictive Models : Gaussian Linear Model, Generalized Linear Model, Model Selection, Non-parametric Estimation, Time Series, Bayesian Estimation, Extreme Values, PCA, FCA, Classification, Missing Values, Survival Model <br/><br/>
-Machine Learning, Deep Learning : Classification(Logistic Regression, Random Forest, SVM), Clustering, Dimension Reduction(T-SNE), Deep Learning(CNN, RNN), Analyse de sentiment(NLP) <br/><br/>
+**Statistical Predictive Models** : Gaussian Linear Model, Generalized Linear Model, Model Selection, Non-parametric Estimation, Time Series, Bayesian Estimation, Extreme Values, PCA, FCA, Classification, Missing Values, Survival Model <br/><br/>
+**Machine Learning & Deep Learning** : Classification(Logistic Regression, Random Forest, SVM), Clustering, Dimension Reduction(T-SNE), Deep Learning(CNN, RNN), Analyse de sentiment(NLP) <br/><br/>
 
 ----------
 
@@ -61,7 +61,7 @@ Churn analysis of an online game. Considering 90 days of inactivity as churn, th
 
 - **[Python] Sentiment Analysis with NLP**<br/>
 Project : [On-going]()<br/>
-Sentiment Analysis of Airbnb users in Paris before and after 2024 Paris Olympics period in order to get insight on how the quality of Airbnb offers during this period were polluted and deteriorated.
+Sentiment Analysis of Airbnb listings in Paris during different periods to study the impact of mass tourism on the Airbnb accomodations. 
 <br/>
 
 - **[Python] Classification with Machine Learning Algorithms**<br/>
@@ -72,9 +72,10 @@ Logistic Regression, Random Forest, and SVM algorithms were trainend by cross-va
 
 - **[Python] Clustering - Dimensionality Reduction**<br/>
 Project : [On-going]()<br/>
+Unsupervised machine learning study applied on the socio-political database used in the book “Une histoire du conflit politique”.
 <br/>
 
 - **[Python] Image Classification with CNN ans RNN**<br/>
 Project : [On-going]()<br/>
-Image Classification
+Image Classification with pictures of 3 hollywood actresses.
 <br/>
