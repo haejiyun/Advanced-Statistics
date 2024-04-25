@@ -65,7 +65,7 @@ Sentiment Analysis of Airbnb listings in Paris during different periods to study
 <br/>
 
 - **[Python] Classification with Machine Learning Algorithms**<br/>
-Project : [On-going]()<br/>
+Project : [Click here](https://github.com/haejiyun/statistics_big_data_dauphine/blob/main/Supervised%20Learning/supervised_learning.pdf)<br/>
 Classification of simulated socio-economic classes based on socio-demographic and economical data published by INSEE. The project treated imbalanced data.
 Logistic Regression, Random Forest, and SVM algorithms were trainend by cross-validation method selectiong best performing algorithms based on confusion matrix, ROC and AUC.
 <br/>
