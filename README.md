@@ -71,7 +71,7 @@ Logistic Regression, Random Forest, and SVM algorithms were trainend by cross-va
 <br/>
 
 - **[Python] Clustering - Dimensionality Reduction - Rupture detection**<br/>
-Project : [On-going](https://github.com/haejiyun/statistics_big_data_dauphine/blob/main/Unsupervised%20Learning/Unsupervised_Learning_Haeji_YUN.pdf)<br/>
+Project : [Click here](https://github.com/haejiyun/statistics_big_data_dauphine/blob/main/Unsupervised%20Learning/Unsupervised_Learning_Haeji_YUN.pdf)<br/>
 Unsupervised machine learning study applied on the socio-economic and political database used in the book “Une histoire du conflit politique” to analyse characteristics of french communes over the years.
 <br/>
 
