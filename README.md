@@ -76,6 +76,6 @@ Unsupervised machine learning study applied on the socio-economic and political 
 <br/>
 
 - **[Python] Image Classification with CNN ans RNN**<br/>
-Project : [On-going]()<br/>
+Project : [On-going](https://github.com/haejiyun/statistics_big_data_dauphine/blob/main/Deep%20Learning/deep-learning-project.ipynb)<br/>
 Image Classification with pictures of 3 hollywood actresses.
 <br/>
