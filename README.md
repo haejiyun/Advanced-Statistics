@@ -62,9 +62,7 @@ Churn analysis of an online game. Considering 90 days of inactivity as churn, th
 - **[Python] Sentiment Analysis with NLP**<br/>
 Project : [On-going](https://airbnb-reviews-cxbenkcm6lhim8o6axbqjf.streamlit.app/)<br/>
 The purpose of this project is to analyze Airbnb guest experiences in Paris across various time periods, leveraging advanced Natural Language Processing (NLP) techniques on guest reviews. By combining various NLP tasks, this study aims to provide meaningful insights and a holistic view of guest experiences.
-
 Furthermore, this project showcases the power of modern NLP techniques in understanding customer experiences in the hospitality sector. It demonstrates how pre-trained models, which have been developed on large datasets, can be effectively utilized to perform complex language tasks. These models are particularly valuable when working with limited or unlabeled data, offering significant advantages in terms of time efficiency and computational resource management.
-
 The project exemplifies how sophisticated NLP applications can be developed using readily available open-source libraries, making advanced text analysis accessible without requiring exceptional Python skills.
 <br/>
 
