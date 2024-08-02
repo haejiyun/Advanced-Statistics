@@ -3,7 +3,9 @@
 <br/>
 This repository is about projects that I have completed during my course of Statistics and Big Data at Dauphine. <br/><br/>
 Tools : R, Python, SQL <br/><br/>
+
 **Statistical Predictive Models** : Gaussian Linear Model, Generalized Linear Model, Model Selection, Non-parametric Estimation, Time Series, Bayesian Estimation, Extreme Values, PCA, FCA, Classification, Missing Values, Survival Model <br/><br/>
+
 **Machine Learning & Deep Learning** : Classification(Logistic Regression, Random Forest, SVM), Clustering, Dimension Reduction(T-SNE), Deep Learning(CNN, RNN), Analyse de sentiment(NLP) <br/><br/>
 
 ----------
