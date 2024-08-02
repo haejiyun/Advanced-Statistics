@@ -77,5 +77,5 @@ Unsupervised machine learning study applied on the socio-economic and political 
 
 - **[Python] Image Classification with CNN ans RNN**<br/>
 Project : [Click here](https://github.com/haejiyun/statistics_big_data_dauphine/blob/main/Deep%20Learning/deep-learning-project.ipynb)<br/>
-Image Classification with pictures of 3 hollywood actresses.
+Image Classification with pictures of hollywood actresses. The aim is to predict the right class for each pictures in 3 classes : Natalie Portman, Keira Knightly, Others. The dataset is composed of 429 training pictures, 168 validation pictures, and 168 test pictures. The target accuracy of the project is 80% by fine-tuning different computer vision algorithms.
 <br/>
