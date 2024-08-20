@@ -1,15 +1,11 @@
 # Advanced Statistics Projects
 
 <br/>
-This repository is about projects that I have completed during my course. 
+This repository highlights my in-depth exploration of advanced statistical techniques through a diverse range of academic projects. Drawing from my coursework, these projects showcase my proficiency in applying cutting-edge statistical methods to tackle complex real-world problems. From predicting churn with survival model to forecasting rainfall with generalized linear models, each endeavor demonstrates my ability to select appropriate analytical approaches and draw meaningful conclusions. Additionally, the repository includes explorations of non-parametric estimation, dimension reduction techniques like PCA and FCA, time series analysis of coffee bean prices, Bayesian estimation for high school teacher mutation scores, and extreme value theory for daily precipitation.
 <br/>
 
 ----------
 
-- **[R] Maize varieties Prediction with Gaussian Linear Model**<br/>
-Project : [click here](https://github.com/haejiyun/statistics-big-data/blob/main/Gaussian%20Linear%20Model/modele_lineaire_gaussien_haeji_yun.pdf)<br/>
-Suitability of Gaussian Linear Model for the prediction of maize varieties based on its characteristics. Descriptive analysis, logical covariate selection, and statsitical tests are applied in order to verify if the gaussian linear model is right model to use.
-<br/>
 
 - **[R] Rain prediction with Generalized Linear Model & Model Selection Method**<br/>
 Project : [click here](https://github.com/haejiyun/statistics-big-data/blob/main/Generalized%20Linear%20Model/MLG_haeji_yun.pdf)<br/>
@@ -47,7 +43,3 @@ Extreme values prediction for daily precipitaion at Marseille. An extrapolation 
 Churn analysis of an online game. Considering 90 days of inactivity as churn, the probability to churn is predicted based on the users' game characteristics such as the level, the race of game character, the zone visited by the character, belonging to a group etc.
 <br/>
 
-- **[Python] Image Classification with CNN ans RNN**<br/>
-Project : [Click here](https://github.com/haejiyun/statistics_big_data_dauphine/blob/main/Deep%20Learning/deep-learning-project.ipynb)<br/>
-Image Classification with pictures of hollywood actresses. The aim is to predict the right class for each pictures in 3 classes : Natalie Portman, Keira Knightly, Others. The dataset is composed of 429 training pictures, 168 validation pictures, and 168 test pictures. The target accuracy of the project is 80% by fine-tuning different computer vision algorithms.
-<br/>
