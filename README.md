@@ -1,7 +1,7 @@
 # Advanced Statistics Projects
 
 <br/>
-This repository highlights my in-depth exploration of advanced statistical techniques through a diverse range of academic projects. Drawing from my coursework, these projects showcase my proficiency in applying cutting-edge statistical methods to tackle complex real-world problems. From predicting churn with survival model to forecasting rainfall with generalized linear models, each endeavor demonstrates my ability to select appropriate analytical approaches and draw meaningful conclusions. Additionally, the repository includes explorations of non-parametric estimation, dimension reduction techniques like PCA and FCA, time series analysis of coffee bean prices, Bayesian estimation for high school teacher mutation scores, and extreme value theory for daily precipitation.
+This repository showcases advanced statistical analyses and models applied to various datasets, employing techniques ranging from generalized linear models to time series and non-parametric methods. Each project demonstrates different aspects of statistical theory and its practical applications.
 <br/>
 
 ----------
