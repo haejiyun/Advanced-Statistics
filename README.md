@@ -1,19 +1,10 @@
-# statistics_big_data_dauphine
+# Advanced Statistics Projects
 
 <br/>
-This repository is about projects that I have completed during my course of Statistics and Big Data at Dauphine. <br/><br/>
-Tools : R, Python, SQL <br/><br/>
-
-**Statistical Predictive Models** : Gaussian Linear Model, Generalized Linear Model, Model Selection, Non-parametric Estimation, Time Series, Bayesian Estimation, Extreme Values, PCA, FCA, Classification, Missing Values, Survival Model <br/><br/>
-
-**Machine Learning & Deep Learning** : Classification(Logistic Regression, Random Forest, SVM), Clustering, Dimension Reduction(T-SNE), Deep Learning(CNN, RNN), Analyse de sentiment(NLP) <br/><br/>
+This repository is about projects that I have completed during my course. 
+<br/>
 
 ----------
-
-
-**PREDICTIVE MODELS**<br/>
-
-
 
 - **[R] Maize varieties Prediction with Gaussian Linear Model**<br/>
 Project : [click here](https://github.com/haejiyun/statistics-big-data/blob/main/Gaussian%20Linear%20Model/modele_lineaire_gaussien_haeji_yun.pdf)<br/>
@@ -54,28 +45,6 @@ Extreme values prediction for daily precipitaion at Marseille. An extrapolation 
 
 - **[Python] Churn Analysis with Survival Model**<br/>
 Churn analysis of an online game. Considering 90 days of inactivity as churn, the probability to churn is predicted based on the users' game characteristics such as the level, the race of game character, the zone visited by the character, belonging to a group etc.
-<br/>
-
-
-
-**MACHINE LEARNING**<br/>
-
-- **[Python/Streamlit] Sentiment Analysis with NLP**<br/>
-Project : [Click here](https://airbnb-guest-reviews.streamlit.app/)<br/>
-Code : [Click here](https://github.com/haejiyun/statistics_big_data_dauphine/blob/main/NLP/projet_marketing.py)<br/>
-Streamlit Repo : [Click here](https://github.com/haejiyun/airbnb-reviews)<br/>
-The purpose of this project is to analyze Airbnb guest experiences in Paris across various time periods, leveraging advanced Natural Language Processing (NLP) techniques on guest reviews. By combining various NLP tasks, this study aims to provide meaningful insights and a holistic view of guest experiences. The analysis results were transformed into an interactive Streamlit application.
-<br/>
-
-- **[Python] Classification with Machine Learning Algorithms**<br/>
-Project : [Click here](https://github.com/haejiyun/statistics_big_data_dauphine/blob/main/Supervised%20Learning/supervised_learning.pdf)<br/>
-Classification of simulated socio-economic classes based on socio-demographic and economical data published by INSEE. The project treated imbalanced data.
-Logistic Regression, Random Forest, and SVM algorithms were trainend by cross-validation method selectiong best performing algorithms based on confusion matrix, ROC and AUC.
-<br/>
-
-- **[Python] Clustering - Dimensionality Reduction - Rupture detection**<br/>
-Project : [Click here](https://github.com/haejiyun/statistics_big_data_dauphine/blob/main/Unsupervised%20Learning/Unsupervised_Learning_Haeji_YUN.pdf)<br/>
-Unsupervised machine learning study applied on the socio-economic and political database used in the book “Une histoire du conflit politique” to analyse characteristics of french communes over the years.
 <br/>
 
 - **[Python] Image Classification with CNN ans RNN**<br/>
