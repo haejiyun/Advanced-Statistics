@@ -53,7 +53,6 @@ Extreme values prediction for daily precipitaion at Marseille. An extrapolation 
 <br/>
 
 - **[Python] Churn Analysis with Survival Model**<br/>
-Project : [soon]()<br/>
 Churn analysis of an online game. Considering 90 days of inactivity as churn, the probability to churn is predicted based on the users' game characteristics such as the level, the race of game character, the zone visited by the character, belonging to a group etc.
 <br/>
 
