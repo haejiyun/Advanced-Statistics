@@ -3,7 +3,8 @@
 ----------
 ## [R] Rain prediction with Generalized Linear Model & Model Selection Method
 
-Rain prediction at Bale in Switzerland based on past meteorological information. The dataset has 1,180 observations and 46 covariates which are very correlated. The first part of the project is about selecting the relevant covariates and the second part of the project is about creating an efficient binary model.<br/>
+Rain prediction at Bale in Switzerland based on past meteorological information. The dataset has 1,180 observations and 46 covariates which are very correlated. The first part of the project is about selecting the relevant covariates and the second part of the project is about creating an efficient binary model.
+<br/>
 
 <p align="center">
   <img src="" width="250" height="200">
@@ -87,12 +88,14 @@ Prediction of necessary points in order for a high school teacher to get mutated
 ----------
 ## [R] Daily precipitation prediction with Extreme Values Theory
 
-Extreme values prediction for daily precipitaion at Marseille. An extrapolation on 1000 years is made from a dataset containing observations of 127 years. Different extreme values models are tested in order to find the most relevant one.
+Dans ce projet, nous cherchons à estimer le niveau de retour de pluie journalière à Marseille, c'est-à-dire le niveau extrême de pluie que nous attendons à dépasser dans 100 ans et dans 1000 ans. Pour cela, nous allons étudier un jeu de données qui contient l'accumulation de pluie journalière en 10−1 mm à Marseille pendant 127 ans depuis le 1er août 1864 jusqu'au 31 juillet 1991. Le jeu de données est sous forme d'un vecteur de dimension 46.355 qui correspond à 365 jours x 127 ans et il n'a pas de valeurs manquantes.
+
+application de différents lois d'extremes : approche de maxima par bloc, estimation par le maximum de vraisemblance, estimation par la méthode des moments, loi de pareto généralisée![image](https://github.com/user-attachments/assets/d2fb5794-c394-4c1a-88f9-f921e2292662)
+
 
 <p align="center">
-  <img src="" width="120" height="150">
-  <img src="" width="120" height="150">
-  <img src="" width="120" height="150">
+  <img src="https://github.com/haejiyun/Advanced-Statistics/blob/main/Extreme%20Values/maxima.png" width="350" height="200">
+  <img src="https://github.com/haejiyun/Advanced-Statistics/blob/main/Extreme%20Values/graph.png" width="350" height="200">
 <p/>
 
 <a href="https://github.com/haejiyun/Advanced-Statistics/blob/main/Extreme%20Values/valeurs_extremes_haeji_yun.pdf">Project</a>; <a href="https://github.com/haejiyun/Advanced-Statistics/blob/main/Extreme%20Values/valeurs_extremes.Rmd">Code</a><br/>
