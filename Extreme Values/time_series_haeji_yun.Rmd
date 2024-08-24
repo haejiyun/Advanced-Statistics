@@ -1,0 +1,706 @@
+---
+title: "Time Series"
+author: "Haeji Yun"
+date: '2023-06-05'
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+
+```{r, include = F, warning = F, message = F}
+library("forecast")
+library("tidyverse")
+library('caschrono')
+```
+
+Dans cette étude, nous allons analyser l'évolution du prix en dollar d'un kilo de café et prédire son prix future par différentes modélisations de séries temporelles.
+
+Le jeu de données contient les prix journaliers de café: le prix le plus élevé du jour, le prix le moins élevé du jour, les prix au début et la fin du jour, ainsi que le volume journalier de transactions sur la période du janvier 2005 au décembre 2020.
+
+Par la suite, nous allons utiliser le prix le plus élevé pour l'étude.
+
+```{r, echo = F}
+coffee = read.csv("coffee.csv")
+coffee = coffee[(substr(coffee$Date, 1, 4) >= 2005) & (substr(coffee$Date, 1, 4) < 2021),]
+
+head(coffee)
+```
+
+# 0. Prépartaion de données
+
+
+## Nettoyage de données
+
+Pour effectuer notre étude, les données doivent être sous forme d'une serie temporelle où les valeurs étudiées forment une suite de données indexées par le temps.
+
+Dans le jeu de données d'origine, le temps est exprimé en jour. Étant donné que seules les dates de la semaine (weekend exclu) sont disponibles, nous avons opté de travailler sur la fréquence du mois. Les valeurs mensuelles sont obtenue par la moyenne des prix journalières sur le mois correspondant.
+
+```{r, echo = F}
+coffee = coffee%>%
+  mutate(Month = substr(Date, 1, 7))%>%  
+  group_by(Month)%>%
+  summarise(Price = mean(High, na.rm=TRUE))%>%
+  spread(Month, Price)
+
+head(coffee)
+```
+
+## Conversion en Time Series
+
+Par la conversion, nous obtenons un jeu de données en series temporelles : 
+
+```{r, echo = F}
+coffee = ts(t(coffee), freq = 12, start =(2005))
+head(coffee, 24)
+```
+
+Les prix varient entre 92,83$ à 285,13$, plutôt concentrés sur les valeurs élevées, et il ne semble pas y avoir de valeurs extrêmes.
+
+```{r, echo = F}
+summary(coffee)
+```
+
+
+# 1. Étude préliminaire
+
+
+## Chronogramme
+
+Nous pouvons visualiser le chronogramme pour avoir une d'ensemble de série.
+
+- Nous avons une **tendance** non linéaire qui varie au cours du temps à la hausse et à la baisse.
+- Il semble y avoir une **saisonnalité** avec une patterne qui se répète avec un effet plutôt multiplicatif mais sa variance reste floue à cause de la tendance qui varie beaucoup. La saisonnalité ne semble pas être régulière.
+- Le prix a connu des **variations exceptionnelles** entre 2010 et 2012 ainsi qu'en 2014 où l'hausse et la baisse de prix sont particulièrement grandes par rapport aux autres années.
+
+Dans la globalité, le prix de café varie en gardant un certain niveau entre 100$ - 150$ et il arrive des événements atypiques de temps en temps mais retrouve le niveau inital par la suite.
+
+```{r, echo = F, fig.width = 12}
+plot(coffee, xlab = "Année", ylab = "Prix de Café ($)", main = "Chronogramme", axes = F)
+axis(1, at = seq(2005,2022), labels = seq(2005,2022), las = 2, col = "lightslategrey", col.axis = "lightslategrey")
+axis(2, at = seq(0, 275, 25), labels = seq(0, 275, 25), col = "lightslategrey", col.axis = "lightslategrey")
+```
+
+
+## Monthplot
+
+À travers un month plot, nous pouvons visualiser simultanément les chronogrammes associés à chaque mois pour detecter la saisonalité. 
+
+Nous voyons que le prix moyen reste presque similaire sur les différents mois. Le prix baisse légèrement entre les mois de mai et de juillet et reste même sur le reste de mois.
+
+Malgré une patterne apparente sur le chronogramme, la saisonnalité semble être très faible, voire presque inexistante.
+
+```{r, echo = F, fig.width = 12}
+monthplot(coffee, main = "Month Plot", xlab = "Mois", ylab = "Prix de Café ($)") 
+```
+
+
+## Lagplot
+
+Nous pouvons voir l'autocorrélation de différents ordres avec un diagramme retardé. 
+
+Nous observons un lien linéaire de la série avec la série du lag 1. La série observée dépend de sa série décalé d'un mois. La série peut être la mieux expliquée par ce qui s'est passé le mois précédant. Nous remarquons également que le lien diminue avec le temps. C'est le passé proche qui explique le mieux la série.
+
+Avec le lien qui diminue de façon progressive, la saisonnalité semble être absente.
+
+```{r, echo = F, fig.width = 12, fig.height = 6}
+lag.plot(coffee, set.lags = 1:12, layout = c(4,3), main = "Diagramme Retardé")
+```
+
+
+## Identification du modèle
+
+Sur le chronogramme, le modèle semble être multiplicatif. Nous pouvons le vérifier avec les méthodes de la bande et du profil.
+
+Avec les courbes non-parallèles qui passe par les minima et les maxima du chronogramme, nous pouvons supposer que le modèle est multiplicatif.
+
+```{r, echo = F, warning = F, fig.width = 10}
+matrix= matrix(coffee, nrow = 12)
+min = apply(matrix, 2, min)
+max = apply(matrix, 2, max)
+anneemin = c(2006:2021)
+anneemax = c(2005:2020)
+plot(coffee, xlab = "Année", ylab = "Prix de Café ($)", axes = F, main = "Minima & Maxima", col = "lightslategrey")
+axis(1, at = seq(2005,2021), labels = seq(2005,2021), las = 2, col = "lightslategrey", col.axis = "lightslategrey")
+axis(2, at = seq(0, 275, 25), labels = seq(0, 275, 25), col = "lightslategrey", col.axis = "lightslategrey")
+points(anneemin, min, col = "darkcyan", type = "l")
+points(anneemax, max, col = "brown3", type = "l")
+legend("topright", c("Maximum","Minimum"), col = c("brown3","darkcyan"), bty = "n", lty = 1)
+```
+
+Nous pouvons également superposés les courbes de chaque années sur les 12 mois. Les courbes n'étant pas parallèles entre elles, le modèle est multiplicatif.
+
+```{r, echo = F, warning = F, fig.width = 10}
+matrix= matrix(coffee, nrow = 12)
+plot(c(1:12), matrix[,1], "l", xlim = c(1,12), ylim = c(0,290), xlab = "Mois", ylab = "Prix de Café ($)", axes = F, main = "Evolution mensuelle")
+axis(1, at = seq(1,12), labels = seq(1,12), col = "lightslategrey", col.axis = "lightslategrey")
+axis(2, col = "lightslategrey", col.axis = "lightslategrey")
+for (i in 2:16){
+  lines(as.ts(matrix[,i]), col = i)
+}
+```
+
+
+
+# 2. Décomposition
+
+Maintenant que nous avons analysé la vue d'ensemble de la serie, nous pouvons la décomposer en composantes princiaples : la tendance, la saisonnalité, et le bruit.
+
+
+## Tendance
+
+La tendance représente l'aspect général de la série. La tendance est estimée sans hypothèse à priori par la méthode de moyenne mobile. Nous observons la variation de la tendance au cours du temps, plutôt à la hausse jusqu'en 2011 puis à la baisse par la suite avec des variations entre temps.
+
+```{r, echo = F, fig.width = 12, fig.height = 3.5}
+trend = ma(coffee, order = 10, centre = T)
+plot(coffee, col = "darkgray", axes = F, xlab= "Année", ylab = "Prix de Café ($)", main = "Tendance - moyenne mobile")
+axis(1, at = seq(2005,2022), labels = seq(2005,2022), las = 2, col = "lightslategrey", col.axis = "lightslategrey")
+axis(2, at = seq(0, 275, 25), labels = seq(0, 275, 25), col = "lightslategrey", col.axis = "lightslategrey")
+lines(trend, col = "brown3")
+legend("topright", c("Observations", "Tendance"), col = c("lightslategrey", "brown3"), bty = "n", lty = 1)
+```
+
+
+Lorsque nous enlevons la tendance de la série, nous retrouvons avec la saisonnalité et le bruit seuls.
+
+```{r, echo = F, fig.width = 12, fig.height = 3.8}
+notrend = coffee-trend
+plot(as.ts(notrend), axes = F, xlab ="Année", ylab = "", main = "Séries sans tendance")
+axis(1, at = seq(2005,2022), labels = seq(2005,2022), las = 2, col = "lightslategrey", col.axis = "lightslategrey")
+axis(2, col = "lightslategrey", col.axis = "lightslategrey")
+```
+
+
+## Saisonnalité
+
+À partir de la série sans tendance, nous pouvons modéliser la saisonnalité en faisant la moyenne de chaque mois de toutes les années. Ce schéma obtenu est ensuite répété dans le temps pour obtenir la saisonnalité.
+
+```{r, echo = F, warning = F, fig.width = 12, fig.heigth = 4}
+notrend_matrix = t(matrix(notrend, nrow = 12))
+saison = colMeans(notrend_matrix, na.rm = T)
+plot(as.ts(rep(saison,12)), xlab = "Année", ylab ="", main = "Saisonnalité", axes = F)
+axis(1, col = "lightslategrey", col.axis = "lightslategrey")
+axis(2, col = "lightslategrey", col.axis = "lightslategrey")
+```
+
+
+## Bruit
+
+Le bruit correspond aux variations résiduelles que nous ne pouvons pas expliquer. Nous pouvons le modéliser en enlevant la tendance et la saisonnalité de la série. Le bruit est centré à 0 avec une variance plus ou moins constante quimontre que la tendance et la saisonnalité ont été bien captées.
+
+```{r, echo = F, warning = F, fig.width = 12}
+bruit = coffee-trend-saison
+plot(as.ts(bruit), axes = F, ylab = "", main = "Bruits", xlab = "Année")
+axis(1, at = seq(2005,2022), labels = seq(2005,2022), las = 2, col = "lightslategrey", col.axis = "lightslategrey")
+axis(2, col = "lightslategrey", col.axis = "lightslategrey")
+```
+
+## Décompose
+
+Les différentes composantes peuvent être récapitulées avec la fonction *decompose*.
+
+```{r, echo = F, fig.width = 12}
+decompose = decompose(coffee, "additive")
+plot(decompose, xlab = "Année")
+```
+
+
+
+# 3. Lissage Exponentiel
+
+Le lissage exponentiel consiste à prédire la série par la mise à jour de la tendance et de la saisonnalité avec des nouvelles observations disponibles.
+
+
+## Séparation de jeu de données
+
+Nous séparons la série en deux pour pouvoir comparer la prédiction avec les vraies valeurs observées. Nous allons entraîner sur la série du 2005 à 2018 et prédire les valeurs du 2019 à 2020.
+
+Comme nous avons vu précedemment que notre série est multiplicative, nous allons effectuer une modélisation multiplicative par la suite.
+
+```{r}
+coffee_train = window(coffee, start = 2005, end = c(2018, 12))
+coffee_test = window(coffee, start = 2019, end = c(2020, 12))
+```
+
+
+## Lissage Exponentiel simple
+
+Le lissage exponentiel simple prédit la série sans saisonnalité avec une tendance localement constante. C'est une moyenne pondérée qui attribue plus de poids au passé proche par le paramètre $\alpha$. Il donne plus d'importance aux valeurs récentes.
+
+Dans notre modèle, $\alpha$ = 0,9999 très proche de 1. Il donne plus de poids au passé très proche.
+
+```{r, echo = F}
+les =ets(coffee_train, model = "MNN")
+summary(les)
+```
+
+## Lissage Exponentiel double
+
+Le lissage exponentiel double modélise la série sans saisonnalité mais avec une tendance localement linéaire. Ici, nous avons deux paramètres $\alpha$ et $\beta$ où $\alpha$ consiste à mettre à jour le niveau et $\beta$ la pente.
+
+Dans notre modélisation $\alpha$ est proche de 1 et $\beta$ est proche de 0. Le modèle provoque de fortes corrections de niveau et de faibles variations de la pente.
+
+Nous observons que les AIC, AICc, et BIC sont faiblement plus élevés qu'avec le lissage exponentiel simple. En terme de ces trois mesures de qualité, le lissage exponentiel double n'est pas préférable au lissage exponentiel simple.
+
+```{r, echo = F}
+led = ets(coffee_train, model = "MMN", damped = F)
+summary(led)
+```
+
+
+## Lissage Exponentiel Triple
+
+Le lissage exponentiel triple modélise la série à la fois avec la saisonnalité et la tendance. Ici, nous avons un autre paramètre $\gamma$ qui consiste à mettre à jour la saisonnalité.
+
+Dans notre modélisation, $\alpha$ est proche de 1, $\beta$ et $\gamma$ sont proches de 0. Le modèle donne plus d'importance au passé très récent pour la mise à jour du niveau mais le passé récent n'a pas autant d'impact pour les mises à jour de la pente et de la saisonnalité.
+
+Les AIC, AICc, et BIC sont faiblement plus élevés que le lissage exponentiel double. Donc le lissage exponentiel triple n'est pas meilleur que les deux précédants.
+
+
+```{r, echo = F}
+let = ets(coffee_train, model = "MMM", damped = F)
+summary(let)
+```
+
+
+## Lissage Exponentiel Automatique 
+
+Nous avons également la possibilité de laisser *R* choisir le meilleur modèle en terme de AICc. Le meilleur modèle retenu est le modèle multiplicatif avec une tendance localement constante et sans tendance qui correspond à notre premier modèle de lissage exponentiel simple.
+
+```{r, echo = F}
+lea = ets(coffee_train)
+summary(lea)
+```
+
+
+## Prédiction
+
+Nous pouvons maintenant prédire avec les trois modèles.
+
+Les prédictions de deux premiers modèles sans saisonnalité sont plus proches aux valeurs réelles observées que le lissage triple. 
+
+Au lissage triple, les prédictions ont tednance à décroitre alors que les vraies valeurs ont une tendance presque constante. Il présente également des intervalles de prédictions plus larges, donc plus d'incertitude.
+
+```{r, echo = F, fig.width = 12, fig.height = 12, fig.height = 5}
+predles = forecast(les, h = 24)
+plot(predles, xlab = "Année", ylab = "Prix de Café ($)", main = "Lissage Exponentiel Simple", axes = F)
+axis(1, at = seq(2005,2021), labels = seq(2005,2021), las = 2, col = "lightslategrey", col.axis = "lightslategrey")
+axis(2, at = seq(0, 275, 25), labels = seq(0, 275, 25), col = "lightslategrey", col.axis = "lightslategrey")
+points(coffee_test,type="l", lty = 5, col = "gray15")
+legend("topright", c("Observations", "Prédictions"), col = c("gray15", "dodgerblue1"), lty = c(5,1), lwd = 2, bty = "n")
+```
+
+
+```{r, echo = F, fig.width = 12, fig.height = 10}
+par(mfrow = c(2,1))
+
+predled = forecast(led, h = 24)
+plot(predled, xlab = "Année", ylab = "Prix de Café ($)", main = "Lissage Exponentiel Double", axes = F)
+axis(1, at = seq(2005,2021), labels = seq(2005,2021), las = 2, col = "lightslategrey", col.axis = "lightslategrey")
+axis(2, at = seq(0, 500, 25), labels = seq(0, 500, 25), col = "lightslategrey", col.axis = "lightslategrey")
+points(coffee_test,type="l", lty = 5, col = "gray15")
+legend("topright", c("Observations", "Prédictions"), col = c("gray15", "dodgerblue1"), lty = c(5,1), lwd = 2, bty = "n")
+
+predlet = forecast(let, h = 24)
+plot(predlet, xlab = "Année", ylab = "Prix de Café ($)", main = "Lissage Exponentiel Triple", axes = F)
+axis(1, at = seq(2005,2021), labels = seq(2005,2021), las = 2, col = "lightslategrey", col.axis = "lightslategrey")
+axis(2, at = seq(0, 275, 25), labels = seq(0, 275, 25), col = "lightslategrey", col.axis = "lightslategrey")
+points(coffee_test,type="l", lty = 5, col = "gray15")
+legend("topright", c("Observations", "Prédictions"), col = c("gray15", "dodgerblue1"), lty = c(5,1), lwd = 2, bty = "n")
+```
+
+
+Le fait que la prédiction constante du lissage exponentiel simple prédit le mieux la série laisse la possibilité que la tendance et la saisonnalité observées sur le chronogramme sont plutôt liés à des éléments autres que le temps et que la tendance de la série est en fait constante sans saisonnalité régulière.
+
+Ou peut-être qu'autres modèles plus complexes de lissage exponentiel seraient plus adaptés à la série.
+
+
+
+# 4. SARIMA
+
+Maintenant nous allons effectuer la prédiction avec le modèle SARIMA. 
+
+Dans un premier temps avec le modèle ARMA après avoir différencié la série, puis avec le modèle SARIMA sur la série d'origine.
+
+
+## Transformation
+
+Tout d'aboard, nous commençons par transformer la série pour résoudre le problèmen d'hétéroscedasticité et séparer à nouveau la série obtenue en séries d'entraînement et de test.
+
+
+```{r, fig.width = 12}
+log_coffee = (log(coffee))
+
+log_coffee_train = window(log_coffee, start = 2005, end = c(2018, 12))
+log_coffee_test = window(log_coffee, start = 2019, end = c(2020, 12))
+```
+
+
+## Stationnarité
+
+Pour appliquer ARMA(p,q), la série doit être stationnaire. Nous pouvons examiner la stationnarité de série avec un corrélogramme.
+
+Sur les corrélogrammes, nous observons que la corrélation est toujours positive est diminue lentement avec le lag. La série est fortement corrélée à ses séries retardées dont l'intensité diminue avec le temps d'écart. 
+Sa moyenne et sa variance ne sont pas constantes donc la série n'est pas stationnaire. De plus la corrélation diminue de façon linéaire et nous n'observons pas de saisonnalité apparente.
+
+
+```{r, echo = F, fig.width = 12, fig.height = 4}
+par(mfrow = c(1,2))
+acf(log_coffee_train, type = "covariance", axes = F, main = "ACF - Covariance", ylab = " ")
+axis(1, col = "lightslategrey", col.axis = "lightslategrey", at = seq(0, 2, 0.5), labels = seq(0, 2, 0.5))
+axis(2, col = "lightslategrey", col.axis = "lightslategrey", at = seq(0, 2000, 500), labels = seq(0, 2000, 500))
+acf(log_coffee_train, type = "correlation", axes = F, main = "ACF - Corrélation", ylab = " ")
+axis(1, col = "lightslategrey", col.axis = "lightslategrey", at = seq(0, 2, 0.5), labels = seq(0, 2, 0.5))
+axis(2, col = "lightslategrey", col.axis = "lightslategrey")
+```
+
+Pour rendre une série stationnaire, nous devons enlever la saisionnalité et la tendance.
+
+
+Nous pouvons enlever la saisonnalité par l'opérateur différence. Étant donnée que la série présente un lien linéaire avec sa série retardée d'un mois, la différenciation est effectuée sur le lag 1. 
+
+Après la différenciation, nous observons que l'autocorrélation s'annule à partir du lag 1. La série n'est plus corrélée avec la série retardée. 
+
+Sur le chronogramme, nous ne voyons plus de saisonnalité. Il reste à enlever la tendance.
+
+
+```{r, echo = F, fig.width = 12, fig.height = 4}
+sans_saison = diff(log_coffee_train, lag = 1, difference = 1)
+
+par(mfrow = c(1,2))
+
+plot(sans_saison, axes = F, main = "Chronogramme sans saisonalité", ylab = " ")
+axis(1, col = "lightslategrey", col.axis = "lightslategrey", at = seq(2005, 2021), labels = seq(2005, 2021))
+axis(2, col = "lightslategrey", col.axis = "lightslategrey")
+
+acf(sans_saison, axes = F, main = "ACF", ylab = " ")
+axis(2, col = "lightslategrey", col.axis = "lightslategrey", at = seq(0, 2, 0.5), labels = seq(0, 2, 0.5))
+axis(1, col = "lightslategrey", col.axis = "lightslategrey", at = seq(0, 2, 0.5), labels = seq(0, 2, 0.5))
+```
+
+Pour éliminer la tendance, nous pouvons utiliser l'opérateur différence. En générale, une différenciation de degré 2 est suffisante pour obtenir une serie stationnaire. Comme nous avons déjà effectuée une différenciation de degré 1 pour éliminer la saisonnalité, nous allons nous contenter de faire une différenciation de degré 1 pour éliminer la tendance.
+
+Après la différenciation, nous obtenos un chronogramme centré à 0 avec une variance constante. Il ne révèle plus de tendance ni d'aspect saisonnier. Nous pouvons vérifier avec l'ACF et la PACF que la serie n'est plus corrélée avec les séries retardées  .
+
+```{r, echo = F, fig.width = 12, fig.height = 4}
+sans_saison_sans_tendance = diff(sans_saison, lag = 1, differences = 1)
+
+par(mfrow = c(1,3))
+
+plot(sans_saison_sans_tendance, axes = F, main = "Chronogramme", ylab = "")
+axis(1, col = "lightslategrey", col.axis = "lightslategrey", at = seq(2005, 2020), labels = seq(2005, 2020))
+axis(2, col = "lightslategrey", col.axis = "lightslategrey")
+
+acf(sans_saison_sans_tendance, axes = F, main = "ACF", ylab = "")
+axis(1, col = "lightslategrey", col.axis = "lightslategrey", at = seq(0, 2, 0.5), labels = seq(0, 2, 0.5))
+axis(2, col = "lightslategrey", col.axis = "lightslategrey")
+
+pacf(sans_saison_sans_tendance, axes = F, main = "PACF", ylab = "")
+axis(1, col = "lightslategrey", col.axis = "lightslategrey", at = seq(0, 2, 0.5), labels = seq(0, 2, 0.5))
+axis(2, col = "lightslategrey", col.axis = "lightslategrey")
+```
+
+Nous pouvons également vérifier avec le lag plot l'absence de lien linéaire entre la série et les séries retardées. Les variations d'un instant à l'autre sont aléatoires et le passé n'explique plus le présent.
+
+```{r, echo = F, fig.width = 12, fig.height = 6}
+lag.plot(sans_saison_sans_tendance, set.lags = (1:12), layout = c(4,3), main = "Lag Plot")
+```
+
+
+## Modèle ARMA(p,q)
+
+Maintenant que nous avons une série stationnaire, nous pouvons identifier le modèle ARMA qui est la combinaison du processus autorégressifs et moyennes mobiles. Pour cela, nous allons nous aider de l'ACF et la PACF de la série ci-dessous.
+
+Nous avons l'ACF qui décroit exponentiellement avec oscillations vers 0 à partrir de l'ordre 3, et la PACF qui décroit exponentiellement avec oscillations vers 0 à partir de l'ordre 6. Nous détectons donc un AR(2) et MA(5).
+
+De plus nous observons que l'ACF s'annule dès le lag 2 alors que la PACF s'annule au bout du lag 6. Donc c'est l'AR qui est donminant. Nous allons donc garder l'ordre de AR détecté et donner un ordre assez bas à MA pour avoir un modèle ARMA(2,2)
+
+
+```{r, echo = F, fig.width = 12, fig.height = 4}
+sans_saison_sans_tendance = diff(sans_saison, lag = 1, differences = 1)
+
+par(mfrow = c(1,2))
+
+acf(sans_saison_sans_tendance, axes = F, main = "ACF", ylab = "")
+axis(1, col = "lightslategrey", col.axis = "lightslategrey", at = seq(0, 2, 0.5), labels = seq(0, 2, 0.5))
+axis(2, col = "lightslategrey", col.axis = "lightslategrey")
+
+pacf(sans_saison_sans_tendance, axes = F, main = "PACF", ylab = "")
+axis(1, col = "lightslategrey", col.axis = "lightslategrey", at = seq(0, 2, 0.5), labels = seq(0, 2, 0.5))
+axis(2, col = "lightslategrey", col.axis = "lightslategrey")
+```
+
+  
+  
+### ARMA(2,2)
+
+Avec le modèle ARMA(2,2), nous pouvons vérifier avec l'ACF et la PACF des résidus du modèle, que les coefficients de l'autocorrelation des résidus sont nuls.
+
+
+```{r, echo = F, fig.width = 12}
+model = Arima(sans_saison_sans_tendance, order = c(2,0,2))
+model
+```
+
+```{r, echo = F, fig.width = 12,  fig.height = 4}
+par(mfrow = c(1,2))
+
+acf(model$residuals, axes = F, main = "ACF - ARMA(2,2)", ylab = "")
+axis(1, col = "lightslategrey", col.axis = "lightslategrey", at = seq(0, 2, 0.5), labels = seq(0, 2, 0.5))
+axis(2, col = "lightslategrey", col.axis = "lightslategrey")
+pacf(model$residuals, axes = F, main = "PACF - ARMA(2,2)", ylab = "")
+axis(1, col = "lightslategrey", col.axis = "lightslategrey", at = seq(0, 2, 0.5), labels = seq(0, 2, 0.5))
+axis(2, col = "lightslategrey", col.axis = "lightslategrey")
+```
+
+Nous pouvons tester si ces coefficients sont significativement nuls avec le test de blancheur. Le test confirme bien que la nullité. Les résidus restant sont bien des bruits blancs. Nous avons capté tout ce que nous pouvons modéliser.
+
+```{r, echo = F}
+Box.test(model$residuals, lag = 20, type = "Box-Pierce")
+```
+
+Nous allons examiner s'il existe la colinéarité entre les paramètres avec la fonction *cor.arma*. Nous voyons qu'il y a plusieurs paramètres qui présentent la colinéarité. Le modèle n'est pas optimal.
+
+```{r, echo = F}
+cor.arma(model)
+```
+
+De plus, le test de Student montre que les paramètres ar1 et ar2 ne sont pas significatifs. 
+L'ordre de notre modèle ne semble pas être adapté, nous allons modéliser à nouveau avec d'ordres plus bas.
+
+```{r, echo = F}
+t_stat(model)
+```
+
+  
+  
+  
+### ARMA(2,1)
+
+En baissant l'ordre de MA à 1, nous avons modélisé ARMA(2,1) et il y a toujours les problèmes de significativité et de colinéarité des paramètres.
+
+```{r, echo = F, fig.width = 12}
+model_2 = Arima(sans_saison_sans_tendance, order = c(2,0,1))
+
+par(mfrow = c(1,2))
+
+acf(model_2$residuals, axes = F, main = "ACF - ARMA(2,1)", ylab = "")
+axis(1, col = "lightslategrey", col.axis = "lightslategrey", at = seq(0, 2, 0.5), labels = seq(0, 2, 0.5))
+axis(2, col = "lightslategrey", col.axis = "lightslategrey")
+pacf(model_2$residuals, axes = F, main = "PACF - ARMA(2,1)", ylab = "")
+axis(1, col = "lightslategrey", col.axis = "lightslategrey", at = seq(0, 2, 0.5), labels = seq(0, 2, 0.5))
+axis(2, col = "lightslategrey", col.axis = "lightslategrey")
+```
+
+```{r, echo = F}
+print("ARMA(2,1)")
+Box.test(model_2$residuals, lag = 20, type = "Box-Pierce")
+```
+
+```{r, echo = F}
+print("Test Student - ARMA(2,1)")
+t_stat(model_2)
+```
+
+```{r, echo = F}
+print("Test de Colinéarité - ARMA(2,1)")
+cor.arma(model_2)
+```
+
+  
+  
+  
+### ARMA(2,0)
+
+Avec un ordre MA plus bas, ARMA(2,0), le modèle semble être bon. L'ACF, la PACF et le test du blancheur vérifient que les résidus obtenus sont du bruit blanc et les paramètres sont significatifs sans problème de colinéarité.
+
+```{r, echo = F, fig.width = 12,  fig.height = 4}
+model_3 = Arima(sans_saison_sans_tendance, order = c(2,0,0))
+
+par(mfrow = c(1,2))
+
+acf(model_3$residuals, axes = F, main = "ACF - ARMA(2,0)", ylab = "")
+axis(1, col = "lightslategrey", col.axis = "lightslategrey", at = seq(0, 2, 0.5), labels = seq(0, 2, 0.5))
+axis(2, col = "lightslategrey", col.axis = "lightslategrey")
+pacf(model_3$residuals, axes = F, main = "PACF - ARMA(2,0)", ylab = "")
+axis(1, col = "lightslategrey", col.axis = "lightslategrey", at = seq(0, 2, 0.5), labels = seq(0, 2, 0.5))
+axis(2, col = "lightslategrey", col.axis = "lightslategrey")
+```
+
+```{r, echo = F}
+print("ARMA(2,0)")
+Box.test(model_3$residuals, lag = 20, type = "Box-Pierce")
+```
+
+```{r, echo = F}
+print("Test Student - ARMA(2,0)")
+t_stat(model_3)
+```
+
+```{r, echo = F}
+print("Test de Colinéarité - ARMA(2,0)")
+cor.arma(model_3)
+```
+
+
+### ARMASELECT
+
+Nous pouvons également laisser R choisir le modèle.
+
+La fonction *armaselect* nous sélectionne les modèles dans l'ordre de performance en terme de SBC. Néanmoins, les cinq premiers modèles présentent des problèmes de colinéarité donc nous n'allons pas utiliser les modèles proposés par la fonction pour notre série.
+
+```{r, echo = F}
+armaselect(sans_saison_sans_tendance)
+```
+
+### AUTOARIMA
+
+Quant à la fonction *auto.arima*, elle nous donne le meilleur modèle en terme de AICc. Pour notre série, elle propose le modèle SARIMA(0,0,1)(1,0,0)[12]. 
+
+L'ACF, la PACF et le test du blancheur du modèle vérifient que les résidus obtenus sont du bruit blanc et que les paramètres sont significatifs sans problème de colinéarité.
+
+
+
+```{r, echo = F}
+model_auto = auto.arima(sans_saison_sans_tendance)
+model_auto
+```
+
+```{r, echo = F, fig.width = 12,  fig.height = 4}
+par(mfrow = c(1,2))
+
+acf(model_auto$residuals, axes = F, main = "ACF - ARIMA(0,0,1)(1,0,0)[12]", ylab = "")
+axis(1, col = "lightslategrey", col.axis = "lightslategrey", at = seq(0, 2, 0.5), labels = seq(0, 2, 0.5))
+axis(2, col = "lightslategrey", col.axis = "lightslategrey")
+pacf(model_auto$residuals, axes = F, main = "PACF - ARIMA(0,0,1)(1,0,0)[12]", ylab = "")
+axis(1, col = "lightslategrey", col.axis = "lightslategrey", at = seq(0, 2, 0.5), labels = seq(0, 2, 0.5))
+axis(2, col = "lightslategrey", col.axis = "lightslategrey")
+```
+
+```{r, echo = F}
+print('ARIMA(0,0,1)(1,0,0)[12]')
+Box.test(model_auto$residuals, lag = 20, type = "Box-Pierce")
+```
+
+```{r, echo = F}
+print('Test Student - ARIMA(0,0,1)(1,0,0)[12]')
+t_stat(model_auto)
+```
+
+```{r, echo = F}
+print('Test de Colinéarité - ARIMA(0,0,1)(1,0,0)[12]')
+cor.arma(model_auto)
+```
+
+Nous pouvons comparer ce modèle avec notre modèle ARMA(2,0) retenu.
+
+Le modèle SARIMA(0,0,1)(1,0,0)[12] présente AIC, AICc, BIC plus bas que le modèle ARMA(2,2). Donc c'est le modèle SARIMA que nous allons garder pour effectuer la prédiction.
+
+```{r, echo = F}
+print("ARMA(2,0)")
+model_3$aic
+model_3$aicc
+model_3$bic
+```
+
+```{r, echo = F}
+print("SARIMA(0,0,1)(1,0,0)[12]")
+model_auto$aic
+model_auto$aicc
+model_auto$bic
+```
+
+
+Nous pouvons également appliquer la fonction *auto.arima* directement sur la série origine sans différenciation. 
+
+Elle propose le modèle ARIMA(2,1,0). Néanmoins le modèle présente un problème de significativité des paramètres. Nous n'allons pas garder ce modèle.
+
+```{r, echo = F}
+sarima = auto.arima(coffee_train)
+sarima
+```
+
+
+```{r, echo = F, fig.width = 12,  fig.height = 4}
+par(mfrow = c(1,2))
+
+acf(sarima$residuals, axes = F, main = "ACF - ARIMA(2,1,0)", ylab = "")
+axis(1, col = "lightslategrey", col.axis = "lightslategrey", at = seq(0, 2, 0.5), labels = seq(0, 2, 0.5))
+axis(2, col = "lightslategrey", col.axis = "lightslategrey")
+pacf(sarima$residuals, axes = F, main = "PACF - ARIMA(2,1,0)", ylab = "")
+axis(1, col = "lightslategrey", col.axis = "lightslategrey", at = seq(0, 2, 0.5), labels = seq(0, 2, 0.5))
+axis(2, col = "lightslategrey", col.axis = "lightslategrey")
+```
+
+
+```{r, echo = F}
+print("ARIMA(2,1,0)")
+Box.test(sarima$residuals, lag = 20, type = "Box-Pierce")
+```
+
+```{r, echo = F}
+print("ARIMA(2,1,0)")
+t_stat(sarima)
+```
+
+```{r, echo = F}
+print("ARIMA(2,1,0)")
+cor.arma(sarima)
+```
+
+
+# 5. Prédiction
+
+Nous pouvons maintenant effectuer la prédiction avec le modèle SARIMA(0,0,1)(1,0,0)[12] retenu. Le modèle a été obtenu en entraînant sur la série différenciée de 2 degrés, nous pouvons donc modéliser SARIMA(0,1,1)(1,1,0)[12] sur la série d'origine pour avoir le même modèle.
+
+Nous observons que les prédictions sont au même niveau que les valeurs réelles observées mais elles restent constante alors que les vraies observations connaissent des variations.
+
+```{r, echo = F, fig.width = 12}
+model_auto_org = Arima(coffee_train, order = c(0,1,1), seasonal = list(order = c(1,0,0), period = 12))
+
+pred_model = forecast(model_auto_org, 24)
+plot(pred_model, xlab = "Année", ylab = "Prix de Café ($)", main = "SARIMA(0,1,1)(1,1,0)[12]", axes = F)
+axis(1, at = seq(2005,2021), labels = seq(2005,2021), las = 2, col = "lightslategrey", col.axis = "lightslategrey")
+axis(2, col = "lightslategrey", col.axis = "lightslategrey")
+points(coffee_test,type="l", lty = 5, col = "gray15")
+legend("topright", c("Observations", "Prédictions"), col = c("gray15", "dodgerblue1"), lty = c(5,1), lwd = 2, bty = "n")
+```
+
+Nous remarquons également que les prédictions obetnues sont presque mêmes que celles obtenues par le lissage exponentiel simple. Les variations qui existent sur les valeurs réelles ne sont pas captées par les deux modèles.
+
+```{r, echo = F, fig.width = 5, fig.height = 5, fig.align = 'center'}
+plot(pred_model, xlab = "Année", ylab = "Prix de Café ($)", main = "SARIMA(0,1,1)(1,1,0)[12]", axes = F, xlim = c(2019, 2021))
+axis(1, at = seq(2005,2021), labels = seq(2005,2021), las = 2, col = "lightslategrey", col.axis = "lightslategrey")
+axis(2, col = "lightslategrey", col.axis = "lightslategrey")
+points(coffee_test,type="l", lty = 5, col = "gray15")
+points(predles$mean, col ="brown3", type = "l", lty = 3, lwd = 2)
+legend("topright", c("Observations", "SARIMA", "Lissage Exponentiel"), col = c("gray15", "dodgerblue1", "brown3"), lty = c(5,1, 3), lwd = 2, bty = "n")
+```
+
+Nous pouvons quand même effectuer la prédiction sur les deux années suivantes qui ne sont pas observées. Pour les années 2022 et 2023, le modèle prédit une tendance constante avec des variations légères à la deuxième moitié de l'année 2022.
+
+```{r, echo = F, fig.width = 12}
+model_auto_all = Arima(coffee, order = c(0,1,1), seasonal = list(order = c(1,0,0), period = 12))
+
+pred_model_all = forecast(model_auto_all, 24)
+plot(pred_model_all, xlab = "Année", ylab = "Prix de Café ($)", main = "SARIMA(0,1,1)(1,1,0)[12]", axes = F)
+axis(1, at = seq(2005,2023), labels = seq(2005,2023), las = 2, col = "lightslategrey", col.axis = "lightslategrey")
+axis(2, col = "lightslategrey", col.axis = "lightslategrey")
+legend("topright", c("Observations", "Prédictions"), col = c("gray15", "dodgerblue1"),  lwd = 2, bty = "n")
+```
+
+
+
+# 6. Conclusion
+
+Malgré la tendance non-linéaire et la saisonnalité visibles sur le chronogramme, les différents modèles nous indiquent que la série a une tendance constante sans saisonnalité apparente au cours du temps.
+
+Nous pouvons supposer que les variations observées sur la série sont des variations aléatoires et des variations liées aux événements externes au temps.
+
+En effet, en 2010, le prix de café a connu une hausse brutale à cause des aléas climatiques subis par les principaux pays productuers de café. Cette hausse avait enregistré le prix le plus haut de café depuis 13 ans, donc c'était un événement atypique qui ne se produit pas régulièrement.
+
+Avec beaucoup plus d'observations ou en éliminant les périodes atypiques de la série, nous pourrions probablement trouver un modèle qui explique mieux la série et prédit les varitions futures.
+
+
+
