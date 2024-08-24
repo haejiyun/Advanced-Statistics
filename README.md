@@ -50,9 +50,9 @@ Dans cette étude, nous allons analyser la consommation journalière de proteine
 analyse des axes principales, acp normé, acp non-normé
 
 <p align="center">
-  <img src="https://github.com/haejiyun/Advanced-Statistics/blob/main/Scoring/individus.png" width="200" height="200">
-  <img src="https://github.com/haejiyun/Advanced-Statistics/blob/main/Scoring/correlation.png" width="200" height="200">
-  <img src="https://github.com/haejiyun/Advanced-Statistics/blob/main/Scoring/inertie.png" width="400" height="200">
+  <img src="https://github.com/haejiyun/Advanced-Statistics/blob/main/Scoring/individus.png" width="250" height="200">
+  <img src="https://github.com/haejiyun/Advanced-Statistics/blob/main/Scoring/correlation.png" width="250" height="200">
+  <img src="https://github.com/haejiyun/Advanced-Statistics/blob/main/Scoring/inertie.png" width="350" height="200">
 <p/>
 
 <a href="https://github.com/haejiyun/Advanced-Statistics/blob/main/Scoring/ACP_haeji_yun.pdf">Project</a>; <a href="https://github.com/haejiyun/Advanced-Statistics/blob/main/Scoring/ACP_haeji_yun.Rmd">Code</a><br/>
