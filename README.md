@@ -12,7 +12,7 @@ avec techniques modèles lineaires généralisées et choix de modèles
 Comme notre étude consiste à prédire s’il va pleuvoir le lendemain ou pas, c’est une variable discrète binaire vrai ou faux que nous voudrons obtenir. Il s’agit d’une classification.
 
 la régression logistique
-Parmi les critères de sélection de modèles, nous ne pourrons pas utiliser R2 ajusté et Cp de Mallows car ils utilisent le résidu de modèle linéaire. Nous allons utiliser les critères aic et bic qui utilisent la vraisemblance![image](https://github.com/user-attachments/assets/f269d38a-4bf2-429b-a710-51420bd0f6d4)
+Parmi les critères de sélection de modèles, nous ne pourrons pas utiliser R2 ajusté et Cp de Mallows car ils utilisent le résidu de modèle linéaire. Nous allons utiliser les critères aic et bic qui utilisent la vraisemblance
 
 <br/>
 
