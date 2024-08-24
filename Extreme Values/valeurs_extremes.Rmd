@@ -1,0 +1,354 @@
+---
+title: "Théorie de Valeurs Extrêmes"
+author: "Haeji Yun"
+date: "2023-08-26"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+  word_document: default
+subtitle: Pluies Maximales Jounalières à Marseille
+---
+
+
+```{r, include = F, warning = F, message = F}
+rm(list=ls())
+library('evd')
+library('ismev')
+library('evir')
+library('fExtremes')
+library('extRemes')
+```
+
+
+Dans ce projet, nous cherchons à estimer le niveau de retour de pluie journalière à Marseille, c'est-à-dire le niveau extrême de pluie que nous attendons à dépasser dans 100 ans et dans 1000 ans.
+
+Pour cela, nous allons étudier un jeu de données qui contient l'accumulation de pluie journalière en $10^{-1}mm$ à Marseille pendant 127 ans depuis le 1er août 1864 jusqu'au 31 juillet 1991.
+
+Le jeu de données est sous forme d'un vecteur de dimension 46.355 qui correspond à 365 jours x 127 ans et il n'a pas de valeurs manquantes.
+
+```{r, echo = F}
+pluies = read.table('marseille.txt')[,1]
+print(paste("Dimension:", length(pluies)))
+print(paste("Valeurs manquantes:", sum(is.na(pluies))))
+```
+
+
+
+# 1. Étude Préliminaire
+
+En convertissant le jeu de données en type séries temporelles, nous pouvons le visualiser en chronogramme pour avoir un aperçu global de données.
+
+Nous obsesrvons une grande variation dans l'année et entre les différentes années. Dans la plupart des années, le niveau maximal journalier de pluies reste en dessous de $750^{-1}mm$, voire $500^{-1}mm$ et nous observons des niveaux particulièrement élevés entre la fin des années 70s aux années 80s.
+
+```{r, echo = F, fig.height = 6, fig.width = 12}
+pluies.ts = ts(pluies,start=c(1864,213),frequency=365) # 213: 1 aout 1864
+plot(pluies.ts, axes = F, col = 'cadetblue3', xlab = "", ylab = "", main = "")
+title(xlab = "Année", ylab = "Précipitation (10-1 mm)", main = 'Pluies maximales journalières Marseille', 
+      col.lab = 'azure4', cex.main = 1.3, cex.lab = 1.1)
+axis(1, at = seq(1864,1992), labels = seq(1864,1992), las = 2, col = 'azure4', col.axis = 'azure4')
+axis(2, at = seq(0, 2250, 250), labels = seq(0, 2250, 250), col = 'azure4', col.axis = 'azure4')
+```
+
+Le niveau de pluie varie entre $0 mm$ et $2.215^{-1}mm$. Avec les quartiles, nous remarquons également qu'il n'a pas plu à Marseille dans plus de 75% du temps.
+
+```{r, echo = F}
+summary(pluies)
+```
+
+Pour comprendre mieux les jours de pluie, nous pouvons utiliser le boxplot. Nous obsesrvons que la pluie n'est pas un événement courant à Marseille et le niveau de pluie reste en générale en dessous de $750^{-1}mm$. Surtout, il y a eu que 5 jours parmi les 46.355 jours où il a plu plus de $1.250^{-1}mm$ et le niveau maximal observé de $2.250^{-1}mm$ s'écarte extrêmement des autres.
+
+```{r, echo = F, fig.height = 6, fig.width = 12}
+boxplot(pluies, horizontal = T, axes = F, col = 'white', border = 'cadetblue3', xlab = "", ylab = "", main = "")
+title(xlab = "Précipitation (10-1mm)", main = 'Pluies maximales journalières Marseille', 
+      col.lab = 'azure4',  cex.main = 1.3, cex.lab = 1.1)
+axis(1, at = seq(0, 2250, 250), labels = seq(0, 2250, 250), las = 1, col = 'azure4', col.axis = 'azure4')
+```
+
+
+
+# 2. Loi d'extremum généralisée
+
+## Approche de maxima par blocs
+
+Puisque nous cherchons le niveau extrême de pluies, ce sont les maxima que nous voudrons estimer. Pour cela, nous allons extraire les maxima de notre jeu de données pour en obtenir un échantillon.
+
+Nous pouvons utiliser l'approche de maxima par blocs où chaque bloc correspond à une année et on y extrait la valeur maximale de l'année. Nous aurons ainsi 127 valeurs comprises entre 143 et 2.215.
+
+Ici, nous ne nous intéressons plus à que des maxima.
+En fait, si nous agrandissons le bloc pour avoir plusieurs années dans chaque bloc, nous n'aurons pas assez de données dans l'échantillon. Au contraire, si nous réduisons le bloc aux mois, nous aurons plus de données mais nous pouvons nous retrouver avec des petites valeurs et nous ne serons plus dans la queue de distribution, qui est la partie qui nous intéresse. Il y a donc un compromis biais - variance. En générale, pour éviter la saisonnalité des mois, le bloc annuel est considéré comme une bonne approche.
+
+Dans notre échantillon obtenue, il n'y a pas eu d'années où il n'a pas plu. Néanmoins, nous remarquons qu'il contient également un niveau de pluie relativement bas. 
+
+```{r, echo = F}
+matPluies = matrix(pluies,365,127) # decoupage en annees aout-juillet
+maxPluies = apply(matPluies,2,max,na.rm = TRUE)
+summary(maxPluies)
+```
+
+Regardons les valeurs extraites sur le chronogramme. Les ronds verts correspondent à des valeurs maximales annuelles. À cause de grande variabilité entre les années, nous remarquons qu'une partie des grandes valeurs intéressantes est omise de notre échantillon.
+
+```{r, echo = F, figh.height = 6, fig.width = 12}
+plot(pluies.ts, axes = F, col = 'cadetblue3', xlab = "", ylab = "", main = "")
+title(xlab = "Année", ylab = "Précipitation (10-1mm)", main = 'Pluies maximales journalières Marseille', 
+      col.lab = 'azure4',  cex.main = 1.3, cex.lab = 1.1)
+axis(1, at = seq(1864,1992), labels = seq(1864,1992), las = 2, col = 'azure4', col.axis = 'azure4')
+axis(2, at = seq(0, 2250, 250), labels = seq(0, 2250, 250), col = 'azure4', col.axis = 'azure4')
+points(seq(1865,1991), pluies.ts[match(maxPluies, pluies.ts)], col = 'aquamarine4', pch = 20)
+```
+
+Sur notre échantillon de maxima, nous pouvons ajuster la loi de valeurs extrêmes généralisée pour estimer les paramètres de la loi par la méthode du maximum de vraisemblance et la méthode de moments.
+
+## Estimation par le maximum de vraisemblance
+
+Estimons les paramètres par la méthode du maximum de vraisemblance. Les paramètres estimés sont le paramètre de position $b$, le paramètre d'échelle $a$, et le paramètre de forme $\gamma$. Nous allons particulièrement nous intéresser au paramètre de forme car c'est $\gamma$ qui nous donne l'information sur le comportement de loi.
+
+L'estimation par le maximum de vraisemblance nous donne un $\gamma$ positif, égal à 0,10. Nous avons alors un domaine d'attraction *Fréchet* avec un comportement convexe des valeurs extrêmes.
+
+```{r, echo = F}
+gev_mle = fevd(maxPluies, type = 'GEV', method = "MLE")
+gev_mle
+```
+
+Nous pouvons anlayser graphiquement la qualité d'ajustement :
+
+**Le premier graphique** représente le quantile empirique par rapport au quantile du modèle. Si les données observées correspondent bien aux données du modèle, elles doivent être alignées sur la droite. Nous observons que les données s'ajustent bien sur la droite avec quelques points qui s'éloigent de la droite. Il y a une sous-estimation des grandes valeurs à droite.
+
+**Le deuxième graphique** nous permet de comparer les deux quantiles précédants avec la droite de régression en plus. Nous observons un bon ajustement mais toujours une sous-estimation à droite.
+
+**Le troisième graphique** nous donne la densité empirique et la densité du modèle. Les deux densités se correspondent bien dans la globalité malgré un écart que nous observons vers la queue de la distribution, à droite. L'ajustement semble bon dans la globalité.
+
+**Le quatrième graphique** représente le niveau de retour avec son intervalle de confiance par rapport à la période de retour. Si l'ajustement est bon, les données doivent être alignées sur la droite et se retrouver dans l'intervalle de confiance. Ici, nous avons un ajustement plutôt bien mais il y a 3 observations qui sortent de l'intervalle de confiance.
+
+```{r, echo = F, fig.height = 10, fig.width = 12}
+plot(gev_mle)
+```
+
+Pour les périodes de retour de 100 ans et de 1000 ans, le niveau de retour estimé est chacun 1.607 et 2.416. Sachant que la valeur maximale sur 127 ans soit 2.215, les valeurs estimées semblent basses.
+
+```{r, echo = F}
+ci(gev_mle, type = 'return.level', return.period = c(100, 150, 1000))
+```
+
+Sur l'intervalle de confiance de paramètres, nous observons qu'il y a une incertitude. En effet, le calcul de l'intervalle de confiance nous montre qu'il y la probabilité que $\gamma$ sois nul, d'où la probabilité d'être dans le domaine d'attraction de *Gumbel*.
+
+```{r, echo = F}
+ci(gev_mle, type = "parameter")
+```
+
+Nous pouvons alors ajuster selon la loi de *Gumbel* pour vérifier si ceci est plausible.
+
+```{r, echo = F}
+gev_mle_gumble = fevd(maxPluies, type = 'Gumbel', method = "MLE")
+gev_mle_gumble
+```
+
+Sur les graphiques obtenus avec le modèle *Gumbel*, nous obtenons des résultats proches à ceux de la loi de *Fréchet*. L'ajustement est bon dans la globalité avec une sous-estimation pour les grandes valeurs à droite. Néanmoins sur le quatrième graphique, les valeurs hors intervalle de confiance est beaucoup plus éloignées de l'intervalle. Ceci est dû au fait que l'intervalle de confiance est droit et est plus restreint par rapport à la loi de *Fréchet*
+
+Le modèle *Fréchet* est préférable au modèle *Gumbel*.   
+\newline
+
+```{r, echo = F, fig.height = 10, fig.width = 12}
+plot(gev_mle_gumble)
+```
+
+Le modèle *Gumbel* estime le niveau de retour égale à 1.412 pour la période de retour de 100 ans qui est encore plus bas que celui estimé par le modèle *Fréchet*. Ce niveau de retour est également inférieur à notre valeur maximale sur 127 ans. L'extrapolation n'est pas idéale avec le modèle *Gumbel*
+
+```{r, echo = F}
+ci(gev_mle_gumble, type = 'return.level', retrun.period = c(100, 150, 1000))
+```
+
+## Estimation par la méthode des moments
+
+Nous pouvons également estimer les paramètres avec la méthode de moments. Nous retrouvons un $\gamma$ positif, égal à 0,12, qui est proche à l'estimation obtenue par le maximum de vraisemblance. 
+
+```{r, echo = F}
+gev_lmo = fevd(maxPluies, type = 'GEV', method = "Lmoments")
+gev_lmo
+```
+
+Sur les graphiques, nous pouvons observer un bon ajustement. Malgré une sous-estimation des grandes valeurs à droite, les données sont bien alignées sur les droites quantile-quantile. L'ajustement est bon sur la densité. Et cette fois-ci, nous avons tous les données qui se trouvent dans l'intervalle de confiance sur le return level plot.
+
+Vu le petit nombre d'observations que nous avons, la méthode par moment semble ajuster mieux que la méthode par le maximum de vraisemblance.
+
+```{r, echo = F, fig.height = 10, fig.width = 12}
+plot(gev_lmo)
+```
+
+Le modèle ajusté par la méthode du moment estime le niveau de retour égal à 1.651 et 2.562 pour les périodes de retour de 100 ans et de 1000 ans respectivement. Bien qu'il estime des valeurs légèrement plus élevée, l'estimation semble toujours basse.
+
+```{r, echo = F}
+ci(gev_lmo, type = 'return.level', return.period = c(100, 150, 1000))
+```
+
+
+
+# 3. Loi de pareto généralisée
+
+## Méthode de seuil
+
+La loi de pareto généralisée modélise les excès.
+
+Les excès sont définis comme les valeurs qui dépassent un certin seuil moins la valeur du seuil. Pour ajuster selon la loi de pareto généralisée, nous avons besoin d'un échantillon des excès. Et nous voudrons que le nombre d'exèces dans notre échantillon soit plus élevé que le nombre de données dans l'échantillon obtenu par l'approche de maxima par bloc. Pour cela, le seuil doit être inférieur à 504.
+
+```{r, echo = F}
+print(paste("Seuil pour avoir plus de 127 données:", findthresh(pluies.ts, 127)))
+```
+
+Le choix de seuil demande également un compromis biais-variance. Si nous choisissons un seuil trop bas, nous ne sommes plus dans la queue de la distribution donc nous aurons un grand biais. Si nous fixons le seuil trop haut, nous aurons peu de données donc forte variance avec une grande incertitude.
+
+Nous pouvons nous baser sur le mean residual line plot pour avoir une tranche de seuils plausibles. Nous considérons la valeur à partir de laquelle le plot n'est plus linéaire comme le seuil.
+
+Dans notre graphique, nous avons une tendance linéaire jusq'à l'entour de 500 à 600. Comme nous voudrons un seuil inférieur à 504, nous allons nous intéresser aux valeurs inférieures à 500 et nous allons tester celles de la partie du graphique ayant la tendance linéaire, soit la tranche 300 à 500. 
+
+```{r, echo = F, fig.height = 3.5}
+mrlplot(maxPluies, axes = F, col = 'cadetblue3', main = "Mean Résidual Line Plot")
+axis(1, at = seq(0, 2500, 500), labels = seq(0, 2500, 500), col = 'azure4', col.axis = 'azure4')
+axis(2, at = seq(-200, 1000, 200), labels = seq(-200, 1000, 200), col = 'azure4', col.axis = 'azure4')
+```
+
+En effet, pour une loi d'excès donnée, le $\gamma$ reste le même quelque soit l'excès du seuil, donc nous pouvons choisir le seuil le plus bas possible pour avoir plus de données dans l'échantillon. 
+
+Pour cela, nous pouvons regarder la stabilité de l'estimation de paramètre pour les différents seuils plausibles. Nous pouvons choisir la valeur jusqu'à laquelle l'estimation reste stable.
+
+Entre l'intervalle 300 et 500, l'estimation reste stable jusqu'à 350.
+
+```{r, echo = F, fig.height = 6.5}
+threshrange.plot(pluies, r = c(300, 500), nint = 9)
+```
+
+Avec un seuil de 350, nous avons 338 données qui représente 0,01% de nos données originales. On a beaucoup plus de données avec plus de valeurs qui sont issues de la queue de la distribution.
+
+Nous avons un gain par rapport au cas précédant puisque nous avons perdu moins de données en gardant plus d'information pertinante.
+
+```{r, echo = F}
+print(paste("Dimension :", length(pluies.ts[pluies.ts > 350])))
+print(paste("Quantile :", 1-length(pluies.ts[pluies.ts > 350])/length(pluies.ts)))
+```
+
+En fixant le seuil à 350, nous gardons tous les valeurs qui se trouvent au dessus de 350. Ces valeurs seront notre echantillon d'excès.
+
+```{r, echo = F, fig.height = 5.5, fig.width = 12}
+threshold = 350
+pluies.ts = ts(pluies,start=c(1864,213),frequency=365) # 213: 1 aout 1864
+plot(pluies.ts, axes = F, col = 'cadetblue3', xlab = "", ylab = "", main = "")
+title(xlab = "Année", ylab = "Précipitation (10-1 mm)", main = 'Pluies maximales journalières Marseille', 
+      col.lab = 'azure4', cex.main = 1.3, cex.lab = 1.1)
+axis(1, at = seq(1864,1992), labels = seq(1864,1992), las = 2, col = 'azure4', col.axis = 'azure4')
+axis(2, at = seq(0, 2250, 250), labels = seq(0, 2250, 250), col = 'azure4', col.axis = 'azure4')
+abline(h = threshold, col = "aquamarine4", lwd = 2, lty = 2)
+```
+
+## Estimation par le maximum de vraisemblance
+
+Nous pouvons ajuster la loi des excès directement sur le jeu de données original en précisant le seuil. Nous obtenons deux paramètres, le paramètre d'échelle $\sigma$ et le paramètre de forme $\gamma$. Là aussi, nous nous intéressons sur le paramètre de forme qui nous donne l'indication sur le comportement des excès.
+
+Avec la méthode du maximum de vraisemblance, nous avons un $\gamma$ positif, égal à 0,19. Les maxima auront tendance à accroître de façon convexe sans point terminal.
+
+```{r, echo = F}
+gp_mle = fevd(pluies, threshold = threshold, type = 'GP', method = "MLE", time.units = "days")
+gp_mle
+```
+
+Nous pouvons vérifier que la qualité d'ajustement est bonne. Les données s'alignent bien sur les graphiques quantile-quantile. La sous-estimation est très minime par rapport aux modèles précédants. La densité s'ajuste très bien aux données observées. Les données s'ajustent très bien sur la droite de return level plot.
+
+Les résultats avec la lois d'excès sont très satisfaisants.
+
+```{r, echo = F, warning = F, fig.height = 10, fig.width = 12}
+plot(gp_mle)
+```
+
+Le modèle prédit un niveau de retour plus élevé, avec 1.826 pour la période de retour de 100 ans et 3.065 pour la période de retour de 1000 ans. Cette prédiction semble beaucoup plus pertinente. 
+
+```{r, echo = F}
+ci(gp_mle, type = 'return.level', return.period = c(100, 150, 1000))
+```
+
+L'intervalle de confiance pour le paramètre $\gamma$ est toujours positif. Nous n'avons pas d'incertitude du modèle.
+
+```{r, echo = F}
+ci(gp_mle, type = "parameter")
+```
+
+## Estimation par la méthode des moments
+
+Quant à la méthode des moments, l'estimation nous donne un $\gamma$ positif, égal à 0,2. Il est très proche de $\gamma$ estimé par la méthode du maximum de vraisemblance. 
+
+```{r, echo = F}
+gp_lmo = fevd(pluies, threshold = threshold, type = 'GP', method = "Lmoments", time.units = 'days')
+gp_lmo
+```
+
+```{r, echo = F, fig.width = 12, fig.height = 9.8}
+plot(gp_lmo)
+```
+
+Nous observons une bonne qualité d'ajustement. Les données sont très bien alignées sur les graphiques quantile-quantile. La densité est très bien ajustée. Nous avons tous les données qui sont presque sur la droite du return level plot. L'intervalle de confiance devient plus large que dans le cas de méthode avec le maximum de vraisemblace puisque $\gamma$ est légèrement plus grand d'où l'accroissement plus rapide avec la période de retour.
+
+```{r, echo = F}
+ci(gp_lmo, type = 'return.level', return.period = c(100, 150, 1000))
+```
+
+Le modèle donne un niveau de retour similaire à celui de maximum de vraisemblance. Il est égal à 1.844 pour la période de retour de 100 ans et 3.126 pour 1000 ans. Légèrement plus grand car l'augmentation de maxima est plus rapide avec un $\gamma$ plus grand.
+
+
+
+# 4. Conclusion
+
+Entre la loi d'extremum généralisée et la loi de pareto généralisée, la dernière extrapole mieux les valeurs extrêmes. Comme l'échantillon utilisé est plus riche en nombre d'observations et en qualité d'information, la loi de pareto généralisée a donné un résultat plus pertinent avec moins d'incertitude par rapport à la loi d'extremum généralisée.
+
+Pour la période de retour de 100 ans, la loi d'excès a donné un niveau de retour plus proche à la valeur maximale sur les 127 ans que la loi de maxima. 
+
+Pour la période de retour de 1000 ans, la loi d'excès a donné un niveau de retour beaucoup plus élevé que la valeur maximale sur les 127 ans par rappoart à la loi de maxima. En effet, la loi de maxima donne un niveau de retour à l'entour de 2.400 et 2.500, proche à la valeur maximale 2.215 que nous observons pendant les 127 ans. La période de retour étant presque 8 fois plus grande que la période observée, nous espérons voir une valeur qui est beaucoup plus grande. Dans ce contexte, la loi d'excès qui nous a donné un niveau de retour supérieur à 3.000 semble plus pertinente.
+
+De plus, la loi d'extremum généralisée présente une incertitude de modèle entre *Fréchet* et *Gumbel* et la loi de *Gumbel* estime des valeurs encore moins pertinent où le niveau de retour pour la période de retour de 1000 ans est inférieure à la valeur maximale observée sur les 127 ans.
+
+Nos valeurs extrêmes semblent donc bien être dans le domaine d'attraction de *Fréchet* où il croit de façon convexe. La loi de pareto généralisée estime un $\gamma$ plus grand qui fait que son niveau de retour accroît plus vite.
+
+```{r, echo = F}
+rl_gev_mle = c(ci(gev_mle, type = 'return.level', return.period = c(100, 1000))[1:2,2],  max(pluies.ts))
+rl_gb_mle = c(ci(gev_mle_gumble, type = 'return.level', return.period = c(100, 1000))[1:2,2],  max(pluies.ts))
+rl_gev_lmo = c(ci(gev_lmo, type = 'return.level', return.period = c(100, 1000))[1:2,2],  max(pluies.ts))
+rl_gp_mle = c(ci(gp_mle, type = 'return.level', return.period = c(100, 1000))[1:2,2],  max(pluies.ts))
+rl_gp_lmo = c(ci(gp_lmo, type = 'return.level', return.period = c(100, 1000))[1:2,2], max(pluies.ts))
+
+rl = matrix(c(rl_gev_mle, rl_gb_mle, rl_gev_lmo, rl_gp_mle, rl_gp_lmo), ncol =3, byrow = T)
+colnames(rl) = c(" 100 ans", " 1000 ans", "MAX observé")
+rownames(rl) = c("GEV - MLE", "GUMBEL - MLE", "GEV - Moments", "GP - MLE", "GP - Moments")
+
+rl
+```
+
+Nous pouvons également confirmer la pertinence de la loi de pareto généralisée avec le return level plot. Les données sont très bien ajustées avec la loi de pareto généralisée. Toutes les données se trouvent dans l'intervalle de confiance et quelques observations qui ne sont pas sur la droite restent toujours très proche de la droite. 
+
+Avec la loi d'extremum généralisée, les données s'ajustent bien dans la globalité mais l'incertitude devient de plus en plus grande avec la période de retour puisque les données sortent de l'intervalle de confiance à droite.
+
+Pour notre jeu de données, la loi d'excès semble bien adapté pour estimer les valeurs extrêmes. Pour la loi, la méthode de maximum de vraisemblance bien que celle des moments s'ajustent très bien.
+
+```{r, echo = F, fig.height = 10, fig.width = 12}
+par(mfrow = c(2,2))
+
+plot(gev_mle, type = 'rl', axes = F, col = 'cadetblue3')
+axis(1, at = c(2, 5, 10, 20, 50, 100, 200, 500, 1000), labels = c(2, 5, 10, 20, 50, 100, 200, 500, 1000), col = 'azure4', col.axis = 'azure4')
+axis(2, at = seq(500, 3000, 500), labels = seq(500, 3000, 500), col = 'azure4', col.axis = 'azure4')
+
+plot(gev_mle_gumble, type = 'rl', axes = F, col = 'cadetblue3')
+axis(1, at = c(2, 5, 10, 20, 50, 100, 200, 500, 1000), labels = c(2, 5, 10, 20, 50, 100, 200, 500, 1000), col = 'azure4', col.axis = 'azure4')
+axis(2, at = seq(500, 3000, 500), labels = seq(500, 3000, 500), col = 'azure4', col.axis = 'azure4')
+
+plot(gp_lmo, type = 'rl', axes = F, col = 'cadetblue3')
+axis(1, at = c(2, 5, 10, 20, 50, 100, 200, 500, 1000), labels = c(2, 5, 10, 20, 50, 100, 200, 500, 1000), col = 'azure4', col.axis = 'azure4')
+axis(2, at = seq(500, 5000, 1000), labels = seq(500, 5000, 1000), col = 'azure4', col.axis = 'azure4')
+
+plot(gp_mle, type = 'rl', axes = F, col = 'cadetblue3')
+axis(1, at = c(2, 5, 10, 20, 50, 100, 200, 500, 1000), labels = c(2, 5, 10, 20, 50, 100, 200, 500, 1000), col = 'azure4', col.axis = 'azure4')
+axis(2, at = seq(500, 5000, 1000), labels = seq(500, 5000, 1000), col = 'azure4', col.axis = 'azure4')
+```
+
+
+
+
+
+
+
+
