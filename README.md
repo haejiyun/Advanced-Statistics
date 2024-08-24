@@ -43,7 +43,7 @@ estimation de densité, estimation de la fonction de régression, comparaison r�
 ----------
 ## [R] Principal Component Analysis, Factorial Correspondance Analysis, CAH
 
-*PCA*
+*PCA*<br>
 Analysis of daily protein consumption of european countries. The dataset is composed of different proteine source with the protein quantity of 25 countries based on which similarities, differences, and particularities are analysed.
 Dans cette étude, nous allons analyser la consommation journalière de proteine des pays européens. Les individus sont les pays et les variables sont les différentes sources de proteine qui donnent l’information sur la quantité consommée exprimée en même unité pour toutes les sources.
 
@@ -59,7 +59,7 @@ analyse des axes principales, acp normé, acp non-normé
 <br/>
 
 
-*FCA*
+*FCA*<br>
 Analysis of 2017 presidential election of France. 14 candidats and the number of votes they received in different departments compose the dataset. The study gives the first insight on the association between the candidates and the departments. The study is then deepen with the clustering method.
 
 <p align="center">
