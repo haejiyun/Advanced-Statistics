@@ -29,10 +29,11 @@ Parmi les critères de sélection de modèles, nous ne pourrons pas utiliser R2 
 ## [R] Non Parametric Estimation
 
 Theoretical application of non parametric model focusing on explanation of its mathematical foundation from kernel estimation to non parametric regression. The emphasis on the choice of the window and the cross-validation.
+estimation de densité, estimation de la fonction de régression, comparaison régression linéaire vs régression non paramétrique, validation croisée
 
 <p align="center">
-  <img src="" width="350" height="200">
-  <img src="" width="400" height="200">
+  <img src="https://github.com/haejiyun/Advanced-Statistics/blob/main/Non%20Parametric%20Estimation/densite.png" width="350" height="200">
+  <img src="https://github.com/haejiyun/Advanced-Statistics/blob/main/Non%20Parametric%20Estimation/formula.png" width="400" height="200">
 <p/>
 
 <a href="https://github.com/haejiyun/Advanced-Statistics/blob/main/Non%20Parametric%20Estimation/Estimation_non_parametrique.pdf">Project</a>; <a href="https://github.com/haejiyun/Advanced-Statistics/blob/main/Non%20Parametric%20Estimation/projet_non_parametrique.Rmd">Code</a><br/>
