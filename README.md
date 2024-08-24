@@ -90,8 +90,8 @@ SARIMA
 
 
 <p align="center">
-  <img src="https://github.com/haejiyun/Advanced-Statistics/blob/main/Time%20Series/sarima.png" width="400" height="200">
-  <img src="https://github.com/haejiyun/Advanced-Statistics/blob/main/Time%20Series/décomposition.png" width="400" height="200">
+  <img src="https://github.com/haejiyun/Advanced-Statistics/blob/main/Time%20Series/sarima.png" width="400" height="180">
+  <img src="https://github.com/haejiyun/Advanced-Statistics/blob/main/Time%20Series/décomposition.png" width="400" height="180">
 <p/>
 
 <a href="https://github.com/haejiyun/Advanced-Statistics/blob/main/Time%20Series/time_series_haeji_yun.pdf">Project</a>; <a href="https://github.com/haejiyun/Advanced-Statistics/blob/main/Time%20Series/time_series_haeji_yun.Rmd">Code</a><br/>
