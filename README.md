@@ -6,9 +6,7 @@ This portfolio showcases a collection of advanced statistical projects, where co
 
 This project addresses the challenge of predicting rainfall in Basel, Switzerland, by leveraging historical meteorological data. The dataset comprises 1,180 observations, each containing 46 covariates, such as temperature, humidity, and wind speed. 
 
-Due to the high correlation among these variables, the first phase of the project focuses on selecting the most relevant predictors using techniques like stepwise selection and regularization methods. 
-
-The second phase involves building a binary classification model, specifically a logistic regression model, to predict whether it will rain the next day. Model selection criteria, such as AIC and BIC, are employed to choose the best-fitting model, ensuring accuracy while avoiding overfitting.
+Due to the high correlation among these variables, the first phase of the project focuses on selecting the most relevant predictors using techniques like stepwise selection and regularization methods. The second phase involves building a binary classification model, specifically a logistic regression model, to predict whether it will rain the next day. Model selection criteria, such as AIC and BIC, are employed to choose the best-fitting model, ensuring accuracy while avoiding overfitting.
 
 <br/>
 
