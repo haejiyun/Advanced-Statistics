@@ -1,0 +1,272 @@
+---
+title: "Analyse en Composantes Principales"
+author: "Haeji Yun"
+date: '2023-03-25'
+output: pdf_document
+---
+
+Dans cette étude, nous allons analyser la consommation journalière de proteine des pays européens. Les individus sont les pays et les variables sont les différentes sources de proteine qui donnent l'information sur la quantité consommée exprimée en même unité pour toutes les sources.
+
+# 1. Analyse Préliminaire
+
+Après la manipulation de données, nous retrouvons avec 25 observations et 9 variables sans valeurs manquantes. 
+
+```{r, include = F}
+proteine=read.table(file="proteines.dat", dec=",",col.names=c("country", "viandr","viandb ", "oeuf", "lait", "poisson", "cereals", "feculent", "oleagine", "fruitleg"))
+x = proteine[,-1]
+rownames(x) = proteine$country
+head(x, 5)
+```
+
+Nous observons un grand écart entre la troisième et la quatrième quartile pour la viande rouge, la possion, et les céréales, qui nous suggère qu'il y a quelques pays qui consomment une quantité remarquablement élevée de ces trois aliments par rapport aux autres pays.
+
+Nous constatons également que, dans la globalité, les pays consomment plus de proteine issue des céréales et du lait par rapport aux autres sources alimentaires.
+
+```{r, echo = F}
+summary(x)
+```
+
+
+# 2. ACP normé
+
+```{r, include = F}
+library(FactoMineR)
+pca = PCA(x, graph = F)
+```
+
+## Analyse du premier plan (axe 1 et 2)
+
+Le premier axe est positivement corrélé avec la viande, le lait, l'oeuf et le féculent. Il est négativement corrélé avec les céréales et les oléagineux. Cet axe oppose donc les pays qui consomment le plus de viande, d'oeuf, de lait et de féculent par rapport à la moyenne et les pays qui consomment le plus d'oléagineux et de céréales par rapport à la moyenne.
+
+Quant au deuxième axe, il y a une corrélation positive avec la poisson, et les fruits & légumes. Donc cet axe oppose les pays qui consomment le plus de ces deux catégories de proteine que la moyenne et les pays qui en consomment le moins par rapport à la moyenne.
+
+La part d'inertie portée par les deux axes est à l'ordre de 62,69% qui n'est pas peu mais pas suffisant pour expliquer toute la variabilité de données. 
+
+```{r, echo = F, fig.height = 3.8}
+plot(pca, choix = "var")
+```
+
+En effet, nous observons qu'il y a d'autres axes qui portent une part d'inertie qui peut être informative. Certes, les axes 1 et 2 portent les plus grandes parts d'inertie de 44,52% et 18,17% respectivement, les axes 3 et 4 présentent également une part d'inertie supérieure à 10%. De ce fait, nous ne pourrons pas expliquer suffisamment de la variance des observations avec  seuls 2 ou 3 axes. 
+
+```{r, echo = F}
+pca$eig
+```
+
+
+```{r, echo = F, fig.height = 3.2}
+par(mfrow = c(1,2))
+barplot(pca$eig[,1], main="Valeurs propres", cex.main = 0.7, cex.axis = 0.7, cex.names = 0.7, las = 2)
+barplot(pca$eig[,2], main="Part d'inertie expliquée", cex.main = 0.7, cex.axis = 0.7, cex.names = 0.7, las = 2)
+```
+
+Sur l'axe 1, le Danemark, l'Allemagne et l'Irelande sont situés plus à droit. Ils consommeraient le plus de viande, d'oeuf, de lait et de féculent et le moins de céréales et d'oléagineux par rapport à la moyenne. La Yougoslavie, la Bulgarie, et l'Albanie sont situés plus à gauche de l'axe. Ils consommeraient le plus de céréales et d'oléagineux et  le moins de viande, de lait, d'oeuf et de féculent par rapport à la moyenne.
+
+Sur l'axe 2, le Portugal et l'Espagne qui se trouvent en haut seraient les pays qui consomment le plus de poisson et de fruits & légumes par rapport à la moyenne. La Bulgarie et l'Albanie qui se trouvent en bas de l'axe 2, consommeraient le moins de poisson et de fruits & légumes.
+
+Nous voyons déjà que la Bulgarie et l'Albanie présentent un caractéristique extrême puisque ces deux pays présentent à la fois la coordonnée la moins élevée sur les deux axes.
+
+```{r, echo = F, fig.height = 3.9, warning = F, message = F}
+plot(pca, choix = "ind")
+```
+
+
+## Analyse de l'axe 1
+
+Nous avons supposé une corrélation positive de l'axe 1 avec la viande, le lait, l'oeuf et le féculent et une corrélation négative avec les céréales et les oléagineux. 
+
+Pour vérifier cela, nous pouvons comparer la moyenne globale avec la moyenne du groupe des individus plus remarquables sur l'axe.
+
+
+```{r, include = F}
+sort_1_top = sort.int(pca$ind$coord[,1], index.return = T, decreasing = T)
+data.frame(x[sort_1_top$ix[1:5],])
+
+sort_1_bottom = sort.int(pca$ind$coord[,1], index.return = T)
+data.frame(x[sort_1_bottom$ix[1:5],])
+```
+Apparemment, les 5 individus ayant les coordonnées les plus élevées sur l'axe 1 ont une consommation moyenne de viande, d'oeuf, de lait, et de féculent plus élevée que la moyenne globale et une consommation moyenne d'oléagineux et de fruits & légumes moins élevée que la moyenne globale. Le contraire est observé chez les 5 individus ayant les coordonnées les moins élevées sur l'axe.
+
+Cela confirme bien notre supposition sur l'axe 1.
+
+```{r, echo = F}
+paste("Moyenne des 5 individus ayant les coordonnées les plus élevées de l'axe 1")
+colMeans(data.frame(x[sort_1_top$ix[1:5],]))
+
+paste("Moyenne des 5 individus ayant les coordonnées les moins élevées de l'axe 1")
+colMeans(data.frame(x[sort_1_bottom$ix[1:5],]))
+
+paste("Moyenne globale")
+colMeans(x)
+```
+
+Nous pouvons aussi la vérifier avec la description automatique de l'axe par la fonction dimdesc() qui explique bien la corrélation positive de l'axe avec l'oeuf, le lait, la viande, et le féculent et sa corrélation négative avec les oléagineux et les céréales.
+
+```{r, echo = F}
+dimdesc(pca)$Dim.1
+```
+
+
+## Analyse de l'axe 2
+
+Pour l'axe 2, nous avons supposé une corrélation positive avec la poisson et les fruits & légumes.
+
+Comme pour l'axe 1, nous pouvons comparer la moyenne globale avec la moyenne du groupe des individus plus remarquables sur l'axe.
+
+```{r, include = F}
+sort_2_top = sort.int(pca$ind$coord[,2], index.return = T, decreasing = T)
+data.frame(x[sort_2_top$ix[1:5],])
+
+sort_2_bottom = sort.int(pca$ind$coord[,2], index.return = T)
+data.frame(x[sort_2_bottom$ix[1:5],])
+```
+
+Apparemment, les 5 individus ayant les coordonnées les plus élevées sur l'axe 2 ont une consommation moyenne de poisson et de fruits & légumes plus élevée que la moyenne globale. Les 5 individus ayant les coordonnées les moins élevées sur l'axe présentent une caratéristique opposée.
+
+Cela confirme bien notre supposition sur l'axe 2.
+
+```{r, echo = F}
+paste("Moyenne des 5 individus ayant les coordonnées les plus élevées de l'axe 2")
+colMeans(data.frame(x[sort_2_top$ix[1:5],]))
+
+paste("Moyenne des 5 individus ayant les coordonnées les moins élevées de l'axe 2")
+colMeans(data.frame(x[sort_2_bottom$ix[1:5],]))
+
+paste("Moyenne globale")
+colMeans(x)
+```
+
+Nous voyons bien la corrélation positive de l'axe avec la poisson et les fruits & légumes par la description automatique de l'axe donnée par la fonction dimdesc().
+
+```{r, echo = F}
+dimdesc(pca)$Dim.2
+```
+
+
+
+# 3. ACP NON NORMÉE
+
+Lorsuqe les données sont exprimées en même unité comme dans notre cas, nous pouvons effectuer une ACP non normé, c'est-à-dire sur les données non standardisées. En effectuant une ACP non normée, nous prenons en considération la variabilité liée au volume de différentes variables. 
+
+Nous avons vu dans l'analyse préliminaire que les pays consomment plus de proteine issue du lait et des céréales par rapport aux autres sources de proteine. Donc nous pouvons supposer que le lait et les céréales vont recevoir un poids plus important en ACP non normée.
+
+```{r, include = F}
+library(FactoMineR)
+pca_bis = PCA(x, graph = F, scale.unit = F)
+```
+
+## Analyse du premier plan (axe 1 et 2)
+
+Effectivement, sur le premier plan, nous voyons que les céréales et le lait ont visiblement un impact plus important. La poisson a également un impact important par rapport aux autres variables.
+
+Nous observons que les signes de corrélation de chaque variable avec les axes changent mais les oppositions des axes restent similaires. 
+
+C'est-à-dire, l'axe 1 oppose toujours les pays qui consomment le plus de viande, d'oeuf, et de lait et le moins de céréales et d'oléagineux par rapport à la moyenne contre les pays qui consomment le moins de viande, d'oeuf, et de lait et le plus de céréales et d'oléagineux. 
+
+Quant à l'axe 2, il oppose les pays qui consomment le plus de poisson et de fruits & légumes et le moins de lait par rapport à la moyenne contre les pays qui  consomment le moins de poisson et de fruits & légumes et le plus de lait par rapport à la moyenne.
+
+La part d'inertie portée par les deux axes est égale à 85,1%. En prenant en compte la variabilité liée au volume des variables, nous arrivons à expliquer plus de variance avec le premier plan.
+
+
+```{r, echo = F, fig.height = 4}
+plot(pca_bis, choix = "var")
+```
+
+En effet, nous observons que presque toute la partie de variance, 92,26% est expliquée par les 3 premières valeurs propres et les autres valeurs propores sont preque comme du bruit.
+
+```{r, echo = F}
+pca_bis$eig
+```
+
+
+```{r, echo = F, fig.height = 3.2}
+par(mfrow = c(1,2))
+barplot(pca_bis$eig[,1], main="Valeurs propres", cex.main = 0.7, cex.axis = 0.7, cex.names = 0.7, las = 2)
+barplot(pca_bis$eig[,2], main="Part d'inertie expliquée", cex.main = 0.7, cex.axis = 0.7, cex.names = 0.7, las = 2)
+```
+
+Sur le plan, nous observons que les pays sont plus eloignés les uns aux autres. L'intégration de la variabilité liée au volume différencie plus les pays entre eux.
+
+Sur l'axe 1, la Suède se trouve à l'extrêmité alors qu'elle était au milieu dans le cas d'ACP normée. Cela suggère qu'elle consomme plus grande quantité de viande, d'oeuf, de lait et de féculant par rapport à la moyenne. L'Allemagne, le Danemark, et l'Irelande restent toujours les pays qui en consomment le plus par rapport à la moyenne. La Bulgarie et la Yugoslavie restent toujours les pays qui en consomment le moins par rapport à la moyenne.
+
+Sur l'axe 2, l'Islande se trouve à l'extrémité alors qu'elle était au milieu dans le cas d'ACP normée. Nous pouvons supposer que l'Islande consomment la plus grande quantité du lait par rapport à la moyenne. Le Portugal et l'Espagne restent toujours les pays qui consomment plus de poisson et de fruits & légumes par rapport à la moyenne.
+
+```{r, echo = F, warning = F, fig.height = 3.6}
+plot(pca_bis, choix = "ind")
+```
+
+## Analyse de l'axe 1
+
+En effectuant une ACP non normée, nous avons détecté un nouvel individu remarquable sur l'axe 1, la Suède. Cela suggère qu'elle consomme plus de viande, d'oeuf, et de lait par rapport à la moyenne.
+
+Nous pouvons le vérifier en comparant la consommation suédoise à la moyenne globale. Certes, nous observons que la consommation de viande, d'oeuf et de lait de Suède est plus élevée que la moyenne.
+
+```{r, echo = F}
+x["Sweden",]
+```
+```{r, echo = F}
+paste("Moyenne Globale")
+colMeans(x)
+```
+
+Nous avons également détecté que les céréales et les oléagineux avaient plus d'impact par rapport à l'ACP normée. La Bulgarie et la Yugoslavie étant les deux pays qui consomment visiblement le plus de céréales et d'oléagineux par rapport à la moyenne, nous pouvons comparer leur consommation moyenne par rapport à la moyenne globale.
+
+Nous observons bien que ces deux pays consomment visiblement plus de céréales et moins de viande, d'oeuf, et de lait par rapport à la moyenne globale.
+
+```{r, echo = F}
+colMeans(x[c("Bulgaria","Yugoslavia"),])
+```
+```{r, echo = F}
+paste("Moyenne Globale")
+colMeans(x)
+```
+
+
+## Analyse de l'axe 2
+
+En ACP non normée, le lait est une nouvelle variable qui impacte manifestement l'axe 2. Et c'est l'Islande qui est l'individu remarquable lié à la consommation du lait, suggérant qu'elle consomme le plus de lait en quantité par rapport à la moyenne.
+
+Nous pouvons le vérifier en comparant la consommation d'Islande à la moyenne globale. Nous voyons bien que la consommation de lait d'Islande est plus élevée, presque double de la moyenne globale.
+
+```{r, echo = F}
+x["Iceland",]
+```
+```{r, echo = F}
+paste("Moyenne Globale")
+colMeans(x)
+```
+
+À l'opposé des pays qui consomment le plus de lait, se trouvent les pays qui consomment le plus de poisson. Comme en ACP normée, l'Espagne et le Portugal sont les pays qui en consomment en plus par rapport à la moyenne. 
+
+En comparant la consommation moyenne de Espagne & Portugal avec la moyenne globale, nous pouvons vérifier que l'Espagne et le Portugal consomment plus de lait en moyenne par rapport à la moyenne globale. Ils consomment plus que le double de la moyenne globale.
+
+```{r, echo = F}
+paste("Moyenne de Espagne & Portugal")
+colMeans(x[c("Spain","Portugal"),])
+```
+
+```{r, echo = F}
+paste("Moyenne Globale")
+colMeans(x)
+```
+
+
+# 4. Conclusion
+
+L'analyse nous a permis de caractériser la consommation de protéine des pays :   
+
+- Les pays de l'Est tels que la Yugoslavie, la Bulgarie, la Roumanie, l'Hongrie, et l'Albanie privilègient la consommation de céréales et d'oléangineux sur la viande, le féculent, le lait, et l'oeuf par rapport à la moyenne des autres pays.  
+
+- Les pays situés au Nord-Ouest comme la Suède, le Danemark, l'Irelande et l'Allemagne consomment plus de viande, d'oeuf, de lait et de féculent et moins de céréales et d'oléagineux par rapport à la moyenne.  
+
+- Les pays du Sud comme l'Espagne et le Portugal sont de grands consommateurs de poisson et de fruits & légumes par rapport à la moyenne.  
+
+- L'Islande consomment beaucoup de lait par rapport à la moyenne.
+
+Donc nous constatons que, dans la globalité, le comportement des pays européens en consommation de proteine est fortement lié à leur situation géographique. De façon intéressant, à part quelques exceptions, la représentation des individus sur le premier plan de l'ACP non normée ressemble beaucoup à leur position géographique réelle sur la carte de l'Europe.
+
+En passant de l'ACP normée à l'ACP non normée, la variabilité liée à la quantité de chaque variable est réintégrée dans l'analyse. En effet, l'ACP normée aurait gommé cette variabilité et agrandi le biais. 
+
+Étant donnée que l'objectif de l'ACP est de réduire le nombre de variables explicatives en gardant plus d'information sur la variabilité de données, l'ACP non normée se révèle plus satisfaisant et interprétable. Il semble qu'une part significative de la variabilité est expliquée par la différence de volume de chaque variable.
+
+
+

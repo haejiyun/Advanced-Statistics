@@ -1,0 +1,322 @@
+---
+title: "AFC et Classification"
+author: "Haeji Yun"
+date: '2023-05-01'
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+
+```{r, include = F, warning = F, message = F}
+library(readr)
+library(FactoMineR)
+library(factoextra)
+library("dplyr")
+library(gridExtra)
+library(grid())
+
+
+Presidentielle_2017_Resultats_Communes_T1_clean <- read_csv("Presidentielle_2017_Resultats_Communes_T1_clean.csv")
+
+# Traitement pour résoudre le problème lié à l'accentuation du E
+colnames(Presidentielle_2017_Resultats_Communes_T1_clean)[20] <- "MELENCHON" 
+donnees_var <- Presidentielle_2017_Resultats_Communes_T1_clean[,c('Abstentions','Blancs','Nuls','LE PEN','MELENCHON','MACRON','FILLON','LASSALLE','DUPONT-AIGNAN','HAMON','ASSELINEAU','POUTOU','ARTHAUD','CHEMINADE')]
+departements <- factor(Presidentielle_2017_Resultats_Communes_T1_clean$Département)
+donnees_elections <- matrix(NA,nlevels(departements),ncol(donnees_var))
+
+# Agrégation des données par département
+for (j in 1:nlevels(departements)){
+  dep = levels(departements)[j]
+  donnees_elections[j,] <- colSums(donnees_var[departements==dep,])
+}
+
+donnees_elections <- data.frame(donnees_elections,row.names = levels(departements))
+colnames(donnees_elections) <- colnames(donnees_var)
+```
+
+
+Dans ce projet, nous étudions les résultats de l'élection présidentielle 2017. Pour cela, nous allons analyser le nombre de votes que les candidats ont obtenu à chaque département.
+
+
+
+# 1. Analyse Préliminaire
+
+Les données sont composées de 106 observations et 14 variables sans valeurs manquantes. Les observations sont les départements et les variables sont les différentes sorties que nous pouvons obtenir au vote : le nom des 11 candidats présidentiels, l'abstention, le blanc et le nul.
+
+En effet, c'est le tableau de contingence formé par le département et le candidat (ou la sortie du vote). Le tableau donne les fréquences formées par les deux variables.
+
+Le tableau ci-dessous montre l'aperçu de données.
+
+
+```{r, echo = F}
+head(donnees_elections)
+```
+Dans le résumé ci-dessous de notre jeu de données, nous pouvons remarquer quelques informations intéressantes.
+
+Nous constatons un nombre d'abstention assez important et grande variabilité entre les candidats.
+
+Nous observons pour chaque candidat qu'il y a un grand écart entre le minimum et la première quartile. Cela suggère que les candidats ont au moins un département où ils ont reçu particulièrement peu de votes par rapport aux autres départements. 
+
+Nous observons également un grand écart entre la troisième quartile et le maximum pour tous les candidats. Les candidats ont au moins un département où ils ont obtenu particulièrement beaucoup de votes.
+
+```{r, echo = F}
+summary(donnees_elections)
+```
+
+
+
+# 2. AFC
+
+Tout d'abord, nous allons effectuer l'analyse factorielle de correspondance(AFC) pour étudier l'association qui existe entre les deux variables : le département et le candidat
+
+L'AFC est une méthode d'analyse de données qui permet d'étudier le liens entre deux variables qualitatives. Basée sur l'inertie, elle consiste à représenter un maximum de l'inertie totale sur le plan factoriel.
+
+C'est une approche géométrique de visualisation des lignes et des colonnes du tableau de contingence en nuage de points à deux dimensions. En effet, elle retourne les coordonnées des éléments des colonnes et des lignes qu'on peut représenter sur un graphique montrant leur association.
+
+
+## Test d'indépendance
+
+Pour étudier l'association entre deux variables, nous supposons qu'il existe une dépendance entre les deux. Nous pouvons évaluer la dépendance des deux variables avec le test de $\chi^2$.
+
+Avec une p-valeur très faible proche de 0, nous pouvons vérifier que la dépendance entre les deux variables est significative.
+
+```{r, echo = F}
+chisq.test(donnees_elections)
+```
+
+
+
+## AFC
+
+L'existence de dépendance est confirmée, nous pouvons donc effectuer l'AFC.
+
+Dans l'analyse factorielle de correspondance, nous regardons l'écart à l'indépendance pour évaluer l'association entre les deux variables.
+
+Pour cela, nous comparons la distribution conditionnelle avec sa distribution marginale du tableau de probabilité obtenue à partir du tableau de contingence. S'il y a une indépendance, la probabilité conditionnelle est égale à la probabilité marginale et s'il n'y a pas d'indépendance, un écart entre les deux est observé.
+
+Nous pouvons calculer l'AFC avec la fonction *CA* du package *FactoMineR*
+
+```{r}
+afc = CA(donnees_elections, graph = F)
+```
+
+
+## Inertie et Pourcentage d'inertie
+
+Pour avoir une représentation en nuage de points de qualité, nous regardons le pourcentage d'inertie des axes obtenus. Le pourcentage d'inertie d'un axe correspond à l'inertie projetée des lignes ou des colonnes sur l'axe divisé par l'inertie totale des lignes ou des colonnes.
+
+Ici, nous avons un pourcentage d'inertie de 44,24% pour le premier axe qui est énorme et 30,31% pour le deuxième axe qui est également important. En total, les deux premiers axes résument 74,55% de l'écart à l'indépendance. C'est un pourcentage acceptable et nous pouvons effectuer l'interprétaion sur ces deux axes.
+
+```{r, echo = F}
+get_eigenvalue(afc)
+```
+
+
+La décroissance des inerties en fonction du rang des axes suggère également le nombre d'axes à conserver. L'inertie de chaque axe donne la quantité d'information retenue par l'axe et l'examination des inerties permet de déterminer le nombre d'axes principaux à considérer dans l'analyse.
+
+La séquence d'inertie peut être représentée avec un graphique en barre. Ici, nous observons que les deux premiers valeurs sont sensiblement grandes que les suivantes. Les deux premiers axes sont prépondérants du point de vue d'inertie donc nous pouvons privilégier ces deux axes dans l'interprétation.
+
+Néanmoins, nous remarquons que l'inertie de chaque axe est très faible. 
+
+En l'AFC, l'inertie est comprise entre 0 et 1. Lorsque l'inertie d'un axe est égale à 1, cela signifie qu'il y a une association exclusive entre les modalités des lignes et des colonnes et une force d'opposition de l'axe est très forte. Par exemple, cela correspondrait à un axe qui oppose un départements qui votent 100% un candidat et tous les autres département qui vote 0% ce candidat. C'est une marque d'association très forte entre une modalité d'un variable et une modalité de l'autre.
+
+La valeur d'inertie étant très faibles pour tous les axes, proche de 0 et loins de 1, nous pouvons comprendre que l'association entre les modalités du département et du candidat n'est pas très forte.
+
+
+```{r, echo = F, fig.height = 3, fig.width = 5, fig.align = 'center'}
+fviz_eig(afc, choice = "eigenvalue", main = "Eigenvalue",barfill = "cornsilk2", barcolor = "cornsilk2", linecolor = "cornsilk3")
+```
+
+
+
+## Visualisation
+
+Géométriquement, l'association entre les deux variables peut être visualisée par un nuage de points. Le nuage de points montre simultanément les éléments de lignes et de colonnes dans un espace commun. Les lignes sont représentées par des points bleus et les colonnes par des triangles rouges.
+
+Ici, nous regardons la distance des points par rapport à l'origine des axes, la distance entre les points, et les positions des points.
+
+- La distance des points par rapport à l'origine représente l'inertie du nuage par rapport au centre de gravité. Plus les données s'écartent de l'indépendance, plus les points s'écartent de l'origine.
+
+- La distance entre les points donne une mesure de similitude. Les points de lignes avec un profil similaire sont proches et les points de colonnes avec un profil similaire sont proches sur le graphique.
+
+- Les positions des points expliquent l'opposition des axes et la liaison entre les lignes et les colonnes.
+
+Dans notre jeu de données, nous avons beaucoup de points qui sont proches et se superposent. Nous allons, dans un premier temps, visualiser les points les plus contributifs pour dégager un premier aperçu de l'association entre les variables.
+
+Sur le premier axe, nous observons les départements d'Outre-Mer à proximité d'abstention d'un côté, les departements du Nord-Ouest et la région parisienne de l'Ouest à proximité de Macron de l'autre côté.
+
+Sur le deuxième axe, nous observons les départements d'Outre-Mer à proximité d'abstention d'un côté, les departements du Nord et du Nord-Est à proximité de LE PEN de l'autre côté.
+
+```{r, echo = F, fig.width = 10, fig.height = 5.3, warning = F}
+plot.CA(afc, xlim = c(-1.1, 0.35), ylim = c(-0.55, 0.35), selectRow = "contrib 20", selectCol = "contrib 3")
+```
+Affichons maintenant tous les candidats.
+
+Nous remarquons que le premier axe oppose également les candidats masculins avec les candidats non-masculins et le deuxième axe oppose les candidats qui ont exécuté le rôle de ministre dans le passé et qui n'ont jamais été ministre dans le passé.
+
+De plus, les candidats qui se trouvent vers la droite sont des candidats qui ne se positionnent pas à l'extrême sur l'échiquier politique et les autres candidats se positionnent à l'extrême sur l'échiquier politique.
+
+```{r, echo = F, fig.width = 10, fig.height = 5.3, warning = F}
+plot.CA(afc, xlim = c(-1.1, 0.35), ylim = c(-0.55, 0.32), selectRow = "contrib 20")
+```
+Nous pouvons regarder ces éléments du près.
+
+Sur le 4ème quadrant, nous trouvons les départements du Nord-Ouest et du Sud-Ouest avec seuls les candidats qui ont déjà été ministre dans le passé parmi tous les candidats. Nous pouvons supposer une association entre ces départements et ce profil de candidats.
+
+Plus les candidats se trouvent à droite du graphique, moins ils se positionnent extrême sur l'échiquier politique. Nous observons plutôt les département du Nord-Ouest que du Sud-Ouest qui se trouvent prôches des candidats non-extrêmists.
+
+```{r, echo = F, fig.width = 10.5, fig.height = 5.3, warning = F}
+plot.CA(afc, xlim = c(-0.02, 0.25), ylim = c(-0.16, 0), title = "Zoom sur Quadrant 4", selectRow = "contrib 60")
+```
+
+Sur le 2ème quadrant, nous trouvons les départements du Nord-Est et du Sud-Est avec seuls candidats féminins. Nous pouvons supposer une association entre ces départements et les candidats féminins.
+
+Sur les 1er et 2ème quadrants, à part Lassselle qui se trouve à la droite du graphique, les candidats se caractérisent extrêmes qu'ils soient droite ou gauche. Ce sont plus les départments du Nord-Est et du Sud-Est qui se trouvent proches de ces candidats.
+
+```{r, echo = F, fig.width = 10.5, fig.height = 5.3, warning = F}
+plot.CA(afc, xlim = c(-0.2, 0.15), ylim = c(0, 0.32), title = "Zoom sur Quadrants 2 & 3", selectRow = "contrib 35")
+```
+
+Grâce à l'AFC, nous avons pu expliquer l'association entre le département et le candidat. Nous pouvons approfondir notre étude avec la classification sur les candidats.
+
+
+
+# 3. Classification
+
+L'objectif de claissification est d'identifier des classes d'individus similaires dans un jeu de données. Elle consiste à construire des classes d'individus possédant des traits de caractères communs. 
+
+Afin d'effectuer une classification sur des données catégorielles, nous avons besoins d'appliquer l'AFC et les transformer en variables quantitatives (axes principaux). 
+
+En effet, la classification repose sur la mesure de ressemblance sur les variables quantitatives. Les mesures de ressemblance couramment utilisées sont la distance euclidienne pour la ressemblance entre les individus et le critère de ward pour la ressemblance entre les groupes d'individus.
+
+Nous voudrons avoir les individus d'une même classe proche et les individus de classes différentes éloginées. Cela revient à minimiser l'inertie intra et maximiser l'inertie inter
+
+
+
+## Classification Ascendante Hiérarchique
+
+Nous pouvons reprendre les résultats de AFC obtenu et y appliquer la classification ascendante hiérachique.
+
+La classification ascendante hiérarchique calcule les distances entre chaques points et les deux points les plus proches sont regroupés dans une branche avec une hauteur de branche égale à la distance entre ces deux points. Ces étapes sont itérées et forme un arbre.
+
+À partir de l'arbre, nous pouvons identifier les différentes classes d'observations similaires et detecter le nombre de classes à considérer.
+
+```{r}
+distances = dist(afc$col$coord)
+cah = hclust(distances, method = "ward.D2")
+```
+
+
+```{r, echo = F, fig.width = 26, fig.height = 15, warning = F}
+fviz_dend(cah)
+```
+
+L'arbre ascendante peut être visualisé à l'aide d'un dendrogramme. L'hauteur de chaque branche correspond à la distance entre deux groupes séparés par la branche, donc l'inertie produite. L'hauteur des branches est une première indication qui peut nous guider à choisir le nombre de classes.
+
+Nous avons 3 à 4 branches bien distinctes sur le dendrogramme. 
+
+Pour nous aider, nous pouvons représenter les sauts d’inertie de l'arbre selon le nombre de classes retenues. Nous observons un grand saut lorsque le nombre de classe est 2, 3, et 4. Donc une classification de 2 à 4 groupes seraient envisageables.
+
+```{r, echo = F, warning = F, fig.height = 5, fig.width = 12}
+inertie = data.frame("Index" = 1:13, "Inertie" = sort(cah$height, decreasing = TRUE))
+d = inertie %>%
+  mutate(Index = replace(Index, Index[1], 0)) %>%
+  mutate(Index = replace(Index, Index[5:13], 0)) %>%
+  mutate(Inertie = replace(Inertie, Inertie[1], NA))%>%
+  mutate(Inertie = replace(Inertie, Inertie < 0.3, NA))
+
+ggplot(inertie, aes())+
+  geom_step(aes(Index ,Inertie), color = "cornsilk4")+
+  geom_point(aes(d$Index,d$Inertie), size = 3, shape = 1, color = "orange")+
+  xlab("Number of Class")+
+  theme_minimal()+
+  ggtitle("Saut d'inertie")
+```
+
+Nous pouvons mieux visualiser le nombre de partition en ajoutant les couleurs sur le dendrogramme. Les individus de même couleurs appartiennent à la même classe. En passant de 3 classes à 4 classes, nous remarquons la séparation de Fillon, Macron, Hammon, Malenchon, Asselineau avec Le Pen, Dupont-Aignan, Poutou, Blancs, et Cheminade. Néanmoins, dans tous les deux cas, nous avons un seul individu, Lassalle qui se trouve seul dans une classe.
+
+
+```{r, echo = F, fig.width = 26, fig.height = 15}
+grid.arrange(fviz_dend(cah, k = 3, main = "Partitionement à 3 Classes"), fviz_dend(cah, k = 4, main = "4 Partitionement à 4 Classes"), ncol = 2)
+```
+
+## Consolidation
+
+En faite, dans la classification ascendante hiérarchique, nous avons une contrainte d'hiérarchie entre les groupes d'individus, qui n'est pas tout le temps nécessaire. Nous pouvons améliorer la classification obtenue par l'algorithme k-means. Pour cela, nous pouvons appliquer k-means avec le nombre de partitions obtenu lors de la classification ascendante hiérarchique.
+
+L'algorithme de k-means est un algorithme de classification que nous pouvos appliquer avec le nombre de classe à priori. L'algorithme choisit k centres de classe au hasard et affecte tous les points au centre le plus proche. Puis les k centres de gravité sont calculés et ces étapes sont itérés jusqu'à ce que les centres de gravité et les points de classes ne changent plus. 
+
+La fonction *HCPC* permet d'effectuer la classification ascéndante hiérarchqiue avec la consolidation par k-means. 
+
+Nous pouvons effectuer HCPC avec 3 et 4 classes.
+
+Par défaut, AFC garde 5 premières dimensions dans le résultat. En reprenant notre résultat obtenu par l'AFC, nous allons considérer seulement les 5 premières dimensions pour la classification. Les 5 premières dimensions contiennent déjà plus de 96% d'inertie donc ce choix est tout à fait correct et nous permet même d'éliminer les bruits contenus dans le reste des dimensions.
+
+```{r}
+hcpc_3 = HCPC(afc, cluster.CA = "columns", nb.clust = 3, consol = F, graph = F)
+hcpc_4 = HCPC(afc, cluster.CA = "columns", nb.clust = 4, consol = F, graph = F)
+```
+
+Sur le dendrogramme, nous observons 3 branches très distinctes. Le passage de 3 à 4 classes semble moins intéréssant car il sépare un seul individu du reste de la classe.
+
+```{r, echo = F, fig.width = 22, fig.height = 15}
+grid.arrange(fviz_dend(hcpc_3, main = "3 Classes"), fviz_dend(hcpc_4, main = "4 Classes"), ncol = 2)
+```
+\newpage
+Nous pouvons également nous aider des sauts d'inertie du dendrogramme dans le choix de nombre de classes. Nous observons un grand saut lorsque le nombre de classe est de 3. Le saut d'inertie au 4ème classe est faible. Nous allons donc garder 3 classes.
+
+```{r, echo = F, fig.width = 12, fig.height = 6}
+par(mfrow = c(1,2))
+plot(hcpc_3, choice = "bar", title = "3 Classes")
+plot(hcpc_4, choice = "bar", title = "4 Classes")
+```
+
+Nous pouvons visualiser la classification obtenue sur le plan factoriel.
+
+Nous observons trois classes avec leur centre de gravité et nous voyons que les individus sont affectés par la classe ayant le centre de gravité le plus proche d'eux. 
+
+La classification sépare les votes nuls et absents dans la classe 1, les candidats avec les caractères politiques extrêmes dans la classe 2, et les candidats qui se présentent pour la première fois à l'élection présidentielle (sauf Melenchon) et qui étaient ex-ministères (sauf Lassalle) dans la 3ème classe.
+
+```{r, echo = F, fig.height = 5, fig.width = 9}
+fviz_cluster(hcpc_3, ggtheme = theme_minimal())
+```
+
+## Caractérisation des classes
+
+Pour mieux comprendre les caractéristiques de classes, nous pouvons regarder les individus représentatifs de chaque classe, qui sont les indivius proches du centre de gravité de la classe. 
+
+Dans la classe 1 correspond à l'absence de choix de candidat. La classe 2 est représentée plutôt par les politiciens extrêmes et la classe 3 par les ex-ministres.
+
+```{r, echo = F}
+hcpc_3$desc.ind$para
+```
+
+Nous pouvons également regarder les individus les plus caractéristiques de la classe dans le sens où ils sont les plus éloignés de tous les autres classes.
+
+Dans la classe 1 c'est le vote nul qui la caractérise le plus, dans la classe 2 Le Pen est l'individu le plus caractérisant de la classe, et Lassalle dans la classe 3. 
+
+```{r, echo = F}
+hcpc_3$desc.ind$dist
+```
+
+
+
+# 4. Conclusion
+
+Nous avons effectué une analyse de données avec l'analyse factorielle de correspondance et la classification. 
+
+L'enchaînement de l'AFC et la classification a un grand avantage d'éliminer les bruits que contiennent les dernières composantes. Nous éliminons ainsi l'aléatoire avant de faire la classification qui permet d'obtenir une classification plus stable où les classes seront moins affectées par l'ajout ou le retrait de quelques individus.
+
+La visualistaion en 3D du dendrogramme sur le plans AFC nous donne une bonne visualisation de notre étude. Elle nous donne une représentation synthétique de notre analyse dans la globalité donnant l'information sur le plan factoriel, l'arbre hiérarchique et la classification.
+
+```{r, echo = F, fig.height = 8, fig.width = 12}
+plot(hcpc_3, choice = "3D.map")
+```
+
+
+
+
+
+
