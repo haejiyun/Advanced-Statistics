@@ -4,12 +4,21 @@
 ## [R] Rain prediction with Generalized Linear Model & Model Selection Method
 
 Rain prediction at Bale in Switzerland based on past meteorological information. The dataset has 1,180 observations and 46 covariates which are very correlated. The first part of the project is about selecting the relevant covariates and the second part of the project is about creating an efficient binary model.
+
+Dans cette analyse, nous nous intéressons à prédire s’il va pleuvoir ou pas le lendemain à Bâle en nous basant sur différentes variables météorologiques qui composent notre jeu de données. Notre jeu de données contient 1180 observations et 46 variables. Les observations correspondent aux différents jours entre 2010 et 2018 et les variables correspondent à différentes caractéristiques météorologiques.
+
+avec techniques modèles lineaires généralisées et choix de modèles
+
+Comme notre étude consiste à prédire s’il va pleuvoir le lendemain ou pas, c’est une variable discrète binaire vrai ou faux que nous voudrons obtenir. Il s’agit d’une classification.
+
+la régression logistique
+Parmi les critères de sélection de modèles, nous ne pourrons pas utiliser R2 ajusté et Cp de Mallows car ils utilisent le résidu de modèle linéaire. Nous allons utiliser les critères aic et bic qui utilisent la vraisemblance![image](https://github.com/user-attachments/assets/f269d38a-4bf2-429b-a710-51420bd0f6d4)
+
 <br/>
 
 <p align="center">
-  <img src="" width="250" height="200">
-  <img src="" width="300" height="200">
-  <img src="" width="250" height="200">
+  <img src="https://github.com/haejiyun/Advanced-Statistics/blob/main/Generalized%20Linear%20Model/confusion.png" width="375" height="150">
+  <img src="https://github.com/haejiyun/Advanced-Statistics/blob/main/Generalized%20Linear%20Model/bic.png" width="375" height="150">
 <p/>
 
 <a href="https://github.com/haejiyun/Advanced-Statistics/blob/main/Generalized%20Linear%20Model/MLG_haeji_yun.pdf">Project</a>; <a href="https://github.com/haejiyun/Advanced-Statistics/blob/main/Generalized%20Linear%20Model/MLG_haeji_yun.Rmd">Code</a><br/>
