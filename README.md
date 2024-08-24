@@ -104,7 +104,7 @@ Prediction of necessary points in order for a high school teacher to get mutated
 
 Dans cette étude, nous nous intéressons au nombre de points nécessaires pour obtenir une mutation profes sionnelle dans les lycées de l’académie de Versailles en 2012. Nous cherchons à expliquer ces points en nous basant sur les différents caratéristiques du lycée tels que l’effectif dans différentes séries, le taux de réussite, le taux d’accès etc.
 
-régression linéaire bayésienne, analyse frequentiste![image](https://github.com/user-attachments/assets/b24794dc-9a71-4b30-b272-d9826d1120cf)
+régression linéaire bayésienne, analyse frequentiste
 
 <p align="center">
   <img src="https://github.com/haejiyun/Advanced-Statistics/blob/main/Bayesian%20Statistics/frequentist.png" width="500" height="200">
