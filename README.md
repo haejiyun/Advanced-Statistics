@@ -64,7 +64,7 @@ Analysis of 2017 presidential election of France. 14 candidats and the number of
 
 Dansceprojet,nousétudions lesrésultatsdel’électionprésidentielle2017. Pourcela,nousallonsanalyser lenombredevotesquelescandidatsontobtenuàchaquedépartement.
 
-AFC, test d'independance, Classification Ascendante Hiérarchique![image](https://github.com/user-attachments/assets/24aadeb1-a12b-4aa1-a5db-b6309bd86a3b)
+AFC, test d'independance, Classification Ascendante Hiérarchique
 
 <p align="center">
   <img src="https://github.com/haejiyun/Advanced-Statistics/blob/main/Scoring/cluster.png" width="225" height="200">
