@@ -1,5 +1,5 @@
 # Advanced Statistics Projects
-This portfolio features a diverse array of projects that demonstrate the application of advanced statistical techniques to solve real-world problems. From predictive modeling to exploratory data analysis, each project provides a deep dive into the nuances of statistical methodologies and their practical applications across various domains.
+This portfolio showcases a collection of advanced statistical projects, where complex data sets are analyzed to make informed predictions and uncover insights. Each project employs a variety of statistical methods, from generalized linear models to time series analysis, providing a deep dive into specific domains such as meteorology, elections, and market trends.
 
 ----------
 ## [R] Rain prediction with Generalized Linear Model & Model Selection Method
