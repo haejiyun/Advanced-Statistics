@@ -62,10 +62,14 @@ analyse des axes principales, acp normé, acp non-normé
 *FCA*<br>
 Analysis of 2017 presidential election of France. 14 candidats and the number of votes they received in different departments compose the dataset. The study gives the first insight on the association between the candidates and the departments. The study is then deepen with the clustering method.
 
+Dansceprojet,nousétudions lesrésultatsdel’électionprésidentielle2017. Pourcela,nousallonsanalyser lenombredevotesquelescandidatsontobtenuàchaquedépartement.
+
+AFC, test d'independance, Classification Ascendante Hiérarchique![image](https://github.com/user-attachments/assets/24aadeb1-a12b-4aa1-a5db-b6309bd86a3b)
+
 <p align="center">
-  <img src="" width="120" height="150">
-  <img src="" width="120" height="150">
-  <img src="" width="120" height="150">
+  <img src="https://github.com/haejiyun/Advanced-Statistics/blob/main/Scoring/cluster.png" width="225" height="200">
+  <img src="https://github.com/haejiyun/Advanced-Statistics/blob/main/Scoring/visu.png" width="225" height="200">
+  <img src="https://github.com/haejiyun/Advanced-Statistics/blob/main/Scoring/saut.png" width="350" height="200">
 <p/>
 
 <a href="https://github.com/haejiyun/Advanced-Statistics/blob/main/Scoring/AFC_Classification_haeji_yun.pdf">Project</a>; <a href="https://github.com/haejiyun/Advanced-Statistics/blob/main/Scoring/AFC_Classification_haeji_yun.Rmd">Code</a><br/>
