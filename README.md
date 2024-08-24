@@ -11,7 +11,7 @@ Rain prediction at Bale in Switzerland based on past meteorological information.
   <img src="" width="250" height="200">
 <p/>
 
-<a href="https://github.com/haejiyun/Advanced-Statistics/blob/main/Generalized%20Linear%20Model/MLG_haeji_yun.pdf">Project</a>; <a href="https://github.com/haejiyun/Advanced-Statistics/blob/main/Bayesian%20Statistics/statistique_bayesienne.Rmd">Code</a><br/>
+<a href="https://github.com/haejiyun/Advanced-Statistics/blob/main/Generalized%20Linear%20Model/MLG_haeji_yun.pdf">Project</a>; <a href="https://github.com/haejiyun/Advanced-Statistics/blob/main/Generalized%20Linear%20Model/MLG_haeji_yun.Rmd">Code</a><br/>
 <br/>
 
 
