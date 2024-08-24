@@ -1,18 +1,14 @@
 # Advanced Statistics Projects
+This portfolio features a diverse array of projects that demonstrate the application of advanced statistical techniques to solve real-world problems. From predictive modeling to exploratory data analysis, each project provides a deep dive into the nuances of statistical methodologies and their practical applications across various domains.
 
 ----------
 ## [R] Rain prediction with Generalized Linear Model & Model Selection Method
 
-Rain prediction at Bale in Switzerland based on past meteorological information. The dataset has 1,180 observations and 46 covariates which are very correlated. The first part of the project is about selecting the relevant covariates and the second part of the project is about creating an efficient binary model.
+This project addresses the challenge of predicting rainfall in Basel, Switzerland, by leveraging historical meteorological data. The dataset comprises 1,180 observations, each containing 46 covariates, such as temperature, humidity, and wind speed. 
 
-Dans cette analyse, nous nous intéressons à prédire s’il va pleuvoir ou pas le lendemain à Bâle en nous basant sur différentes variables météorologiques qui composent notre jeu de données. Notre jeu de données contient 1180 observations et 46 variables. Les observations correspondent aux différents jours entre 2010 et 2018 et les variables correspondent à différentes caractéristiques météorologiques.
+Due to the high correlation among these variables, the first phase of the project focuses on selecting the most relevant predictors using techniques like stepwise selection and regularization methods. 
 
-avec techniques modèles lineaires généralisées et choix de modèles
-
-Comme notre étude consiste à prédire s’il va pleuvoir le lendemain ou pas, c’est une variable discrète binaire vrai ou faux que nous voudrons obtenir. Il s’agit d’une classification.
-
-la régression logistique
-Parmi les critères de sélection de modèles, nous ne pourrons pas utiliser R2 ajusté et Cp de Mallows car ils utilisent le résidu de modèle linéaire. Nous allons utiliser les critères aic et bic qui utilisent la vraisemblance
+The second phase involves building a binary classification model, specifically a logistic regression model, to predict whether it will rain the next day. Model selection criteria, such as AIC and BIC, are employed to choose the best-fitting model, ensuring accuracy while avoiding overfitting.
 
 <br/>
 
@@ -28,8 +24,9 @@ Parmi les critères de sélection de modèles, nous ne pourrons pas utiliser R2 
 ----------
 ## [R] Non Parametric Estimation
 
-Theoretical application of non parametric model focusing on explanation of its mathematical foundation from kernel estimation to non parametric regression. The emphasis on the choice of the window and the cross-validation.
-estimation de densité, estimation de la fonction de régression, comparaison régression linéaire vs régression non paramétrique, validation croisée
+This project explores the theoretical and practical aspects of non-parametric statistical methods, which do not assume a specific parametric form for the underlying data distribution. 
+
+The study begins with kernel density estimation, where the focus is on understanding how different kernel functions and bandwidth selections affect the smoothness and accuracy of the estimated density. The project then delves into non-parametric regression, comparing it with traditional linear regression to highlight the flexibility of non-parametric methods in capturing complex relationships within data. Cross-validation is extensively used to optimize the choice of parameters, such as bandwidth in kernel methods, ensuring the models are both accurate and generalizable.
 
 <p align="center">
   <img src="https://github.com/haejiyun/Advanced-Statistics/blob/main/Non%20Parametric%20Estimation/densite.png" width="400" height="200">
@@ -44,10 +41,8 @@ estimation de densité, estimation de la fonction de régression, comparaison r�
 ## [R] Principal Component Analysis, Factorial Correspondance Analysis, CAH
 
 *PCA*<br>
-Analysis of daily protein consumption of european countries. The dataset is composed of different proteine source with the protein quantity of 25 countries based on which similarities, differences, and particularities are analysed.
-Dans cette étude, nous allons analyser la consommation journalière de proteine des pays européens. Les individus sont les pays et les variables sont les différentes sources de proteine qui donnent l’information sur la quantité consommée exprimée en même unité pour toutes les sources.
-
-analyse des axes principales, acp normé, acp non-normé
+This project investigates daily protein consumption across 25 European countries, focusing on identifying dietary patterns and trends. 
+Principal Component Analysis is employed to reduce the dimensionality of the dataset, revealing the main factors that contribute to differences in protein consumption. The analysis uncovers clusters of countries with similar dietary habits and highlights outliers with unique consumption patterns, providing insights into regional dietary differences.
 
 <p align="center">
   <img src="https://github.com/haejiyun/Advanced-Statistics/blob/main/Scoring/individus.png" width="200" height="200">
@@ -60,11 +55,8 @@ analyse des axes principales, acp normé, acp non-normé
 
 
 *FCA*<br>
-Analysis of 2017 presidential election of France. 14 candidats and the number of votes they received in different departments compose the dataset. The study gives the first insight on the association between the candidates and the departments. The study is then deepen with the clustering method.
-
-Dansceprojet,nousétudions lesrésultatsdel’électionprésidentielle2017. Pourcela,nousallonsanalyser lenombredevotesquelescandidatsontobtenuàchaquedépartement.
-
-AFC, test d'independance, Classification Ascendante Hiérarchique
+The second part of this project applies Factorial Correspondence Analysis (FCA) to the 2017 French presidential election results. The dataset includes 14 candidates and the number of votes they received across various departments in France. 
+FCA is used to map the relationships between candidates and regions, offering a visual representation of how different areas of France align with specific political ideologies. The analysis is further enriched by Hierarchical Ascendant Classification, which groups departments with similar voting patterns, providing a deeper understanding of electoral dynamics.
 
 <p align="center">
   <img src="https://github.com/haejiyun/Advanced-Statistics/blob/main/Scoring/cluster.png" width="250" height="200">
@@ -78,16 +70,8 @@ AFC, test d'independance, Classification Ascendante Hiérarchique
 ----------
 ## [R] Coffee Bean Price Prediction with Time Series Method
 
-Application of time series theory on anlysis of kilo coffee price. The analysis is done with graphical method and different time series analysis methods in order to make a prediction of future kilo coffe prices. Differents time series models are compared.
-
-Dans cette étude, nous allons analyser l’évolution du prix en dollar d’un kilo de café et prédire son prix future par différentes modélisations de séries temporelles. Le jeu de données contient les prix journaliers de café: le prix le plus élevé du jour, le prix le moins élevé du jour, les prix au début et la fin du jour, ainsi que le volume journalier de transactions sur la période du janvier 2005 au décembre 2020.
-
-étude exploratoire avec chronogramme, monthplot, lagplot
-identification du modèle
-décomposition
-lissage exponentiel
-SARIMA
-
+In this project, time series analysis is used to predict future prices of coffee beans based on historical price data. The dataset spans from January 2005 to December 2020 and includes daily records of the highest, lowest, opening, and closing prices, as well as the volume of transactions. 
+The project begins with an exploratory analysis, using tools like chronograms, month plots, and lag plots to understand the data's temporal structure. Various time series models, including ARIMA, SARIMA, and exponential smoothing, are then applied to forecast future prices. The performance of these models is compared to select the most accurate and reliable method for predicting future trends in coffee prices.
 
 <p align="center">
   <img src="https://github.com/haejiyun/Advanced-Statistics/blob/main/Time%20Series/sarima.png" width="400" height="180">
@@ -100,11 +84,9 @@ SARIMA
 ----------
 ## [R] High School Mutation Score Prediction with Bayesian Estimation
 
-Prediction of necessary points in order for a high school teacher to get mutated to other school. The number of points is prediction for each set of 'high school - subject' using baysian regression. A comparison with a frequentist approch is tested in order to check the plausibility of the bayesian model.  
+This project aims to predict the points required for high school teachers to secure transfers to different schools within the Versailles academy, focusing on the year 2012. The points system is influenced by various factors, including the school's enrollment numbers, success rates, and accessibility metrics. 
 
-Dans cette étude, nous nous intéressons au nombre de points nécessaires pour obtenir une mutation profes sionnelle dans les lycées de l’académie de Versailles en 2012. Nous cherchons à expliquer ces points en nous basant sur les différents caratéristiques du lycée tels que l’effectif dans différentes séries, le taux de réussite, le taux d’accès etc.
-
-régression linéaire bayésienne, analyse frequentiste
+Bayesian regression is employed to model the relationship between these factors and the required points, offering a probabilistic approach that incorporates prior knowledge and uncertainty. The Bayesian model is compared with a frequentist linear regression approach to assess its predictive performance and to illustrate the benefits of using Bayesian methods in handling complex, uncertain data.
 
 <p align="center">
   <img src="https://github.com/haejiyun/Advanced-Statistics/blob/main/Bayesian%20Statistics/frequentist.png" width="500" height="200">
@@ -117,10 +99,8 @@ régression linéaire bayésienne, analyse frequentiste
 ----------
 ## [R] Daily precipitation prediction with Extreme Values Theory
 
-Dans ce projet, nous cherchons à estimer le niveau de retour de pluie journalière à Marseille, c'est-à-dire le niveau extrême de pluie que nous attendons à dépasser dans 100 ans et dans 1000 ans. Pour cela, nous allons étudier un jeu de données qui contient l'accumulation de pluie journalière en 10−1 mm à Marseille pendant 127 ans depuis le 1er août 1864 jusqu'au 31 juillet 1991. Le jeu de données est sous forme d'un vecteur de dimension 46.355 qui correspond à 365 jours x 127 ans et il n'a pas de valeurs manquantes.
-
-application de différents lois d'extremes : approche de maxima par bloc, estimation par le maximum de vraisemblance, estimation par la méthode des moments, loi de pareto généralisée
-
+This project focuses on estimating the extreme levels of daily rainfall in Marseille, with a particular interest in predicting the maximum rainfall expected to occur once in 100 years and once in 1,000 years. The dataset comprises 127 years of daily rainfall data, recorded from August 1, 1864, to July 31, 1991. 
+The analysis employs Extreme Value Theory, specifically using the block maxima approach and the Generalized Pareto Distribution, to model the tail behavior of the rainfall distribution. Maximum likelihood estimation and the method of moments are used to estimate the parameters of the extreme value distributions, providing insights into the potential for future extreme weather events in the region.
 
 <p align="center">
   <img src="https://github.com/haejiyun/Advanced-Statistics/blob/main/Extreme%20Values/maxima.png" width="350" height="200">
@@ -133,4 +113,7 @@ application de différents lois d'extremes : approche de maxima par bloc, estima
 ----------
 ## [Python] Churn Analysis with Survival Model
 
-Churn analysis of an online game. Considering 90 days of inactivity as churn, the probability to churn is predicted based on the users' game characteristics such as the level, the race of game character, the zone visited by the character, belonging to a group etc
+This project analyzes customer churn in an online gaming environment, where churn is defined as 90 days of inactivity. The goal is to predict the probability of churn based on various player characteristics, such as the level of the game character, the character's race, the zones visited within the game, and whether the player belongs to a group. 
+Survival analysis, specifically the Cox proportional hazards model, is used to model the time until churn occurs, providing a predictive tool that can help game developers understand the factors leading to customer attrition. 
+This analysis is critical for developing strategies to retain players and reduce churn rates in the competitive online gaming industry.
+
