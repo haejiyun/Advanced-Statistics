@@ -99,6 +99,7 @@ Bayesian regression is employed to model the relationship between these factors 
 ## [R] Daily precipitation prediction with Extreme Values Theory
 
 This project focuses on estimating the extreme levels of daily rainfall in Marseille, with a particular interest in predicting the maximum rainfall expected to occur once in 100 years and once in 1,000 years. The dataset comprises 127 years of daily rainfall data, recorded from August 1, 1864, to July 31, 1991. 
+
 The analysis employs Extreme Value Theory, specifically using the block maxima approach and the Generalized Pareto Distribution, to model the tail behavior of the rainfall distribution. Maximum likelihood estimation and the method of moments are used to estimate the parameters of the extreme value distributions, providing insights into the potential for future extreme weather events in the region.
 
 <p align="center">
