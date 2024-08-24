@@ -45,10 +45,14 @@ estimation de densité, estimation de la fonction de régression, comparaison r�
 
 *PCA*
 Analysis of daily protein consumption of european countries. The dataset is composed of different proteine source with the protein quantity of 25 countries based on which similarities, differences, and particularities are analysed.
+Dans cette étude, nous allons analyser la consommation journalière de proteine des pays européens. Les individus sont les pays et les variables sont les différentes sources de proteine qui donnent l’information sur la quantité consommée exprimée en même unité pour toutes les sources.
+
+analyse des axes principales, acp normé, acp non-normé
+
 <p align="center">
-  <img src="" width="120" height="150">
-  <img src="" width="120" height="150">
-  <img src="" width="120" height="150">
+  <img src="https://github.com/haejiyun/Advanced-Statistics/blob/main/Scoring/individus.png" width="200" height="200">
+  <img src="https://github.com/haejiyun/Advanced-Statistics/blob/main/Scoring/correlation.png" width="200" height="200">
+  <img src="https://github.com/haejiyun/Advanced-Statistics/blob/main/Scoring/inertie.png" width="400" height="200">
 <p/>
 
 <a href="https://github.com/haejiyun/Advanced-Statistics/blob/main/Scoring/ACP_haeji_yun.pdf">Project</a>; <a href="https://github.com/haejiyun/Advanced-Statistics/blob/main/Scoring/ACP_haeji_yun.Rmd">Code</a><br/>
