@@ -69,7 +69,7 @@ AFC, test d'independance, Classification Ascendante Hiérarchique
 <p align="center">
   <img src="https://github.com/haejiyun/Advanced-Statistics/blob/main/Scoring/cluster.png" width="250" height="200">
   <img src="https://github.com/haejiyun/Advanced-Statistics/blob/main/Scoring/visu.png" width="250" height="200">
-  <img src="https://github.com/haejiyun/Advanced-Statistics/blob/main/Scoring/saut.png" width="350" height="200">
+  <img src="https://github.com/haejiyun/Advanced-Statistics/blob/main/Scoring/saut.png" width="300" height="200">
 <p/>
 
 <a href="https://github.com/haejiyun/Advanced-Statistics/blob/main/Scoring/AFC_Classification_haeji_yun.pdf">Project</a>; <a href="https://github.com/haejiyun/Advanced-Statistics/blob/main/Scoring/AFC_Classification_haeji_yun.Rmd">Code</a><br/>
