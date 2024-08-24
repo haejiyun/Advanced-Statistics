@@ -76,14 +76,22 @@ AFC, test d'independance, Classification Ascendante Hiérarchique
 <br/>
 
 ----------
-## [R] Coffee Bean Price Prediction with Time Series Method**
+## [R] Coffee Bean Price Prediction with Time Series Method
 
 Application of time series theory on anlysis of kilo coffee price. The analysis is done with graphical method and different time series analysis methods in order to make a prediction of future kilo coffe prices. Differents time series models are compared.
 
+Dans cette étude, nous allons analyser l’évolution du prix en dollar d’un kilo de café et prédire son prix future par différentes modélisations de séries temporelles. Le jeu de données contient les prix journaliers de café: le prix le plus élevé du jour, le prix le moins élevé du jour, les prix au début et la fin du jour, ainsi que le volume journalier de transactions sur la période du janvier 2005 au décembre 2020.
+
+étude exploratoire avec chronogramme, monthplot, lagplot
+identification du modèle
+décomposition
+lissage exponentiel
+SARIMA
+
+
 <p align="center">
-  <img src="" width="120" height="150">
-  <img src="" width="120" height="150">
-  <img src="" width="120" height="150">
+  <img src="https://github.com/haejiyun/Advanced-Statistics/blob/main/Time%20Series/sarima.png" width="400" height="200">
+  <img src="https://github.com/haejiyun/Advanced-Statistics/blob/main/Time%20Series/decomposition.png" width="400" height="200">
 <p/>
 
 <a href="https://github.com/haejiyun/Advanced-Statistics/blob/main/Time%20Series/time_series_haeji_yun.pdf">Project</a>; <a href="https://github.com/haejiyun/Advanced-Statistics/blob/main/Time%20Series/time_series_haeji_yun.Rmd">Code</a><br/>
