@@ -68,8 +68,9 @@ FCA is used to map the relationships between candidates and regions, offering a 
 ----------
 ## [R] Coffee Bean Price Prediction with Time Series Method
 
-In this project, time series analysis is used to predict future prices of coffee beans based on historical price data. The dataset spans from January 2005 to December 2020 and includes daily records of the highest, lowest, opening, and closing prices, as well as the volume of transactions. 
-The project begins with an exploratory analysis, using tools like chronograms, month plots, and lag plots to understand the data's temporal structure. Various time series models, including ARIMA, SARIMA, and exponential smoothing, are then applied to forecast future prices. The performance of these models is compared to select the most accurate and reliable method for predicting future trends in coffee prices.
+This project leverages time series analysis to forecast future coffee bean prices using historical data. The dataset, covering the period from January 2005 to December 2020, includes daily records of key pricing metrics: the highest, lowest, opening, and closing prices, along with the transaction volumes.
+
+In the exploratory phase, visual tools like chronograms, month plots, and lag plots are used to uncover underlying patterns and seasonal trends in the data. Following this, several time series models such as ARIMA, SARIMA, and exponential smoothing are implemented to generate price forecasts. These models are rigorously compared to identify the most accurate and robust approach for predicting future price movements, providing valuable insights into market trends and volatility.
 
 <p align="center">
   <img src="https://github.com/haejiyun/Advanced-Statistics/blob/main/Time%20Series/sarima.png" width="400" height="180">
