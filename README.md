@@ -105,8 +105,8 @@ This project focuses on estimating the extreme levels of daily rainfall in Marse
 The analysis employs Extreme Value Theory, specifically using the block maxima approach and the Generalized Pareto Distribution, to model the tail behavior of the rainfall distribution. Maximum likelihood estimation and the method of moments are used to estimate the parameters of the extreme value distributions, providing insights into the potential for future extreme weather events in the region.
 
 <p align="center">
-  <img src="https://github.com/haejiyun/Advanced-Statistics/blob/main/Extreme%20Values/maxima.png" width="350" height="200">
-  <img src="https://github.com/haejiyun/Advanced-Statistics/blob/main/Extreme%20Values/graph.png" width="400" height="200">
+  <img src="https://github.com/haejiyun/Advanced-Statistics/blob/main/Extreme%20Values/maxima.png" width="350" height="150">
+  <img src="https://github.com/haejiyun/Advanced-Statistics/blob/main/Extreme%20Values/graph.png" width="400" height="150">
 <p/>
 
 <a href="https://github.com/haejiyun/Advanced-Statistics/blob/main/Extreme%20Values/valeurs_extremes_haeji_yun.pdf">Project</a>; <a href="https://github.com/haejiyun/Advanced-Statistics/blob/main/Extreme%20Values/valeurs_extremes.Rmd">Code</a><br/>
